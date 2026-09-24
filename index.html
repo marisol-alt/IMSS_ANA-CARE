@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Levantamiento de Actividades Preoperativas — IMSS / ANA Care</title>
+<title>ANA Care – Sistema de Cuidado Post-Hospitalario</title>
 <style>
   :root {
     --navy: #1c3452;
@@ -259,7 +259,46 @@
   .gantt-today-line { position:absolute; top:0; bottom:0; width:2px; background:#c0392b; z-index:2; }
   .gantt-today-tag { position:absolute; top:-2px; font-size:9px; font-weight:700; color:#c0392b; background:#fff; padding:0 3px; transform:translateX(-50%); white-space:nowrap; }
 
+  /* Home / Portada */
   .recovery-banner { background:#fff6e9; border:1px solid #f0d9ad; border-radius:var(--radius); padding:11px 14px; margin-bottom:12px; font-size:12px; color:#7a5a1e; }
+  .home-hero { background:var(--navy); color:#fff; border-radius:var(--radius); padding:32px 34px; margin-bottom:16px; }
+  .home-hero .hh-kicker { font-size:12px; letter-spacing:2px; text-transform:uppercase; color:#9fd8cf; font-weight:700; margin-bottom:6px; }
+  .home-hero h1 { font-size:30px; margin:0 0 4px; font-weight:800; color:#fff; }
+  .home-hero .hh-sub { font-size:15px; color:#c9d5e6; }
+  .home-section { background:var(--panel-bg); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); padding:18px 22px; margin-bottom:12px; }
+  .home-section .hs-num { display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px; border-radius:7px; background:var(--teal); color:#fff; font-weight:800; font-size:13px; margin-right:9px; }
+  .home-section h3 { display:flex; align-items:center; font-size:15.5px; color:var(--navy); margin:0 0 10px; }
+  .home-section .hs-body { font-size:13px; color:var(--text); line-height:1.65; }
+  .home-section .hs-label { font-weight:700; color:var(--teal-dark); margin-right:4px; }
+  .home-section ul { margin:6px 0 0 18px; padding:0; }
+  .home-section ul li { margin-bottom:5px; }
+  table.home-table { width:100%; border-collapse:collapse; font-size:13px; margin-top:4px; }
+  table.home-table th, table.home-table td { text-align:left; padding:9px 12px; border-bottom:1px solid var(--border); }
+  table.home-table th { background:var(--gray); color:var(--navy); font-size:11px; text-transform:uppercase; letter-spacing:0.3px; }
+  .home-stages { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:10px; margin-top:8px; }
+  .home-stage { border:1px solid var(--border); border-left:4px solid var(--teal); border-radius:8px; padding:12px 14px; background:var(--row-alt); }
+  .home-stage .st-title { font-weight:700; color:var(--navy); font-size:12.5px; margin-bottom:3px; }
+  .home-stage .st-body { font-size:12px; color:var(--text-soft); line-height:1.5; }
+
+  /* Documentación / Reportes / Dashboard */
+  .doc-list { background:var(--panel-bg); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; }
+  .doc-row { display:flex; align-items:center; gap:12px; padding:13px 16px; border-bottom:1px solid var(--border); cursor:pointer; }
+  .doc-row:last-child { border-bottom:none; }
+  .doc-row:hover { background:var(--row-alt); }
+  .doc-row .dr-icon { font-size:18px; }
+  .doc-row .dr-name { font-weight:700; color:var(--navy); font-size:13px; }
+  .doc-row .dr-desc { font-size:11.3px; color:var(--text-soft); }
+  .doc-row .dr-open { margin-left:auto; font-size:11.5px; color:var(--teal-dark); font-weight:700; }
+
+  .kpi-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:10px; margin-bottom:14px; }
+  .kpi-card { background:var(--panel-bg); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); padding:14px 16px; }
+  .kpi-card .kc-label { font-size:11px; color:var(--text-soft); text-transform:uppercase; letter-spacing:0.3px; font-weight:700; }
+  .kpi-card .kc-value { font-size:26px; font-weight:800; color:var(--navy); margin-top:4px; }
+  .kpi-card .kc-sub { font-size:11px; color:var(--text-soft); margin-top:2px; }
+  .chart-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(340px,1fr)); gap:14px; }
+  .chart-card { background:var(--panel-bg); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); padding:16px 18px; }
+  .chart-card h4 { margin:0 0 10px; font-size:13px; color:var(--navy); }
+  .chart-card canvas { max-height:260px; }
   .conn-banner { background:#fbeae5; border:1px solid #eec3b6; border-radius:var(--radius); padding:11px 14px; margin-bottom:12px; font-size:12.5px; color:#8a3a25; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
   .recovery-actions { margin-top:7px; display:flex; gap:8px; flex-wrap:wrap; }
 
@@ -283,6 +322,7 @@
      ============================================================ -->
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 <script>
   // === PEGA AQUÍ TU CONFIGURACIÓN DE FIREBASE (reemplaza este objeto) ===
   var FIREBASE_CONFIG = {
@@ -300,26 +340,31 @@
 
 <div class="app">
   <aside class="sidebar" id="sidebar">
-    <div class="brand">
-      <h1>Levantamiento preoperativo</h1>
-      <div class="sub">Proyecto IMSS · ANA Care<br>Arranque: 15 enero 2027</div>
+    <div class="brand" id="brandHome" style="cursor:pointer;" title="Ir al inicio">
+      <h1>ANA Care</h1>
+      <div class="sub">Sistema de Cuidado Post-Hospitalario</div>
     </div>
     <div class="sidebar-scroll">
-      <div class="nav-item" id="navMapa"><span>🗺️</span><div class="label"><span class="name">Mapa funcional</span></div></div>
-
-      <div class="nav-parent" id="navLevantamiento">
-        <span class="caret">▸</span>
-        <div class="label"><span class="name">Levantamiento de información</span></div>
-      </div>
-      <div class="nav-subgroup" id="subgroupLevantamiento"></div>
+      <div class="nav-item" id="navMapa"><span>1.</span><div class="label"><span class="name">Mapa funcional</span></div></div>
 
       <div class="nav-parent" id="navActividades">
         <span class="caret">▸</span>
+        <span>2.</span>
         <div class="label"><span class="name">Actividades</span></div>
       </div>
       <div class="nav-subgroup" id="subgroupActividades"></div>
 
-      <div class="nav-item" id="navRuta"><span>🛤️</span><div class="label"><span class="name">Ruta crítica</span></div></div>
+      <div class="nav-item" id="navRuta"><span>3.</span><div class="label"><span class="name">Ruta crítica</span></div></div>
+      <div class="nav-item" id="navDocs"><span>4.</span><div class="label"><span class="name">Documentación</span></div></div>
+      <div class="nav-item" id="navReportes"><span>5.</span><div class="label"><span class="name">Reportes</span></div></div>
+      <div class="nav-item" id="navDashboard"><span>6.</span><div class="label"><span class="name">Dashboard</span></div></div>
+
+      <div class="nav-section-label">Captura</div>
+      <div class="nav-parent" id="navLevantamiento">
+        <span class="caret">▸</span>
+        <div class="label"><span class="name">Captura de actividades</span></div>
+      </div>
+      <div class="nav-subgroup" id="subgroupLevantamiento"></div>
     </div>
   </aside>
 
@@ -330,10 +375,15 @@
         <button type="button" class="btn small" id="connRetryBtn">Reintentar conexión</button>
       </div>
 
+      <!-- ===================== INICIO (portada) ===================== -->
+      <div id="viewHome" style="display:none;">
+      </div>
+
       <!-- ===================== FORM VIEW ===================== -->
       <div id="viewForm">
         <div class="intro">
           <h2>Levantamiento de actividades preoperativas – IMSS / ANA Care</h2>
+
           <p>Para que el proyecto esté <strong>100% listo para el 15 de enero de 2027</strong>, indica <strong>únicamente las actividades indispensables</strong> — no tareas pequeñas ni trabajo del día a día.</p>
         </div>
 
@@ -433,6 +483,43 @@
         </div>
       </div>
 
+      <!-- ===================== DOCUMENTACIÓN ===================== -->
+      <div id="viewDocs" style="display:none;">
+        <div class="intro">
+          <h2>Documentación</h2>
+          <p>Documentos de referencia del proyecto. Se abren para consulta desde donde viven guardados — no se copian ni se descargan a esta herramienta.</p>
+        </div>
+        <div class="doc-list" id="docList"></div>
+      </div>
+
+      <!-- ===================== REPORTES ===================== -->
+      <div id="viewReportes" style="display:none;">
+        <div class="intro">
+          <h2>Reportes</h2>
+          <p>Resumen ejecutivo del estado del proyecto, generado a partir de lo capturado hasta ahora.</p>
+        </div>
+        <div class="top-actions">
+          <button class="btn" id="refreshReporteBtn">↻ Actualizar</button>
+          <button class="btn teal" id="downloadReporteBtn">Descargar reporte (.txt)</button>
+        </div>
+        <div id="reporteBody"></div>
+      </div>
+
+      <!-- ===================== DASHBOARD ===================== -->
+      <div id="viewDashboard" style="display:none;">
+        <div class="intro">
+          <h2>Dashboard</h2>
+          <p>Vista general del avance del proyecto: captura, ejecución y ruta crítica.</p>
+        </div>
+        <div class="kpi-grid" id="dashKpis"></div>
+        <div class="chart-grid">
+          <div class="chart-card"><h4>Avance de ejecución por área</h4><canvas id="chartAreaProgress"></canvas></div>
+          <div class="chart-card"><h4>Actividades capturadas por área</h4><canvas id="chartAreaCount"></canvas></div>
+          <div class="chart-card"><h4>Distribución de estado</h4><canvas id="chartEstadoDist"></canvas></div>
+          <div class="chart-card"><h4>Cierre estimado vs. objetivo</h4><canvas id="chartCierre"></canvas></div>
+        </div>
+      </div>
+
       <footer class="note">Herramienta interna de coordinación · Proyecto IMSS / ANA Care</footer>
     </div>
   </main>
@@ -526,7 +613,7 @@
   }
 
   function hideAllViews(){
-    ["viewForm","viewMapa","viewActividadesOverview","viewActividadesArea","viewRuta"].forEach(function(id){
+    ["viewHome","viewForm","viewMapa","viewActividadesOverview","viewActividadesArea","viewRuta","viewDocs","viewReportes","viewDashboard"].forEach(function(id){
       document.getElementById(id).style.display = "none";
     });
   }
@@ -537,7 +624,242 @@
   }
   document.getElementById("navMapa").addEventListener("click", showMapa);
 
-  var state = { currentArea: null, currentActArea: null, view: "form", data: {}, resultados: [], dbNS: null, saving: false };
+  // ---------------- Inicio (portada) ----------------
+  function showHome(){
+    state.view = "home"; hideAllViews();
+    document.getElementById("viewHome").style.display = "block";
+    renderHome();
+    renderNav();
+  }
+  document.getElementById("brandHome").addEventListener("click", showHome);
+
+  function renderHome(){
+    var el = document.getElementById("viewHome");
+    el.innerHTML =
+      '<div class="home-hero">' +
+        '<div class="hh-kicker">ANA CARE</div>' +
+        '<h1>Sistema de Cuidado Post-Hospitalario</h1>' +
+        '<div class="hh-sub">Herramienta interna de coordinación del proyecto</div>' +
+      '</div>' +
+
+      '<div class="home-section"><h3><span class="hs-num">1</span>Identificación del proyecto</h3><div class="hs-body">' +
+        '<div><span class="hs-label">Nombre:</span>ANA Care – Sistema de Cuidado Post-Hospitalario</div>' +
+        '<div style="margin-top:6px;"><span class="hs-label">Duración:</span>Se contemplan nueve meses de operación, distribuidos en tres etapas, precedidos por una fase preoperativa del 15 de octubre de 2026 al 15 de enero de 2027.</div>' +
+      '</div></div>' +
+
+      '<div class="home-section"><h3><span class="hs-num">2</span>Objetivos y criterios de éxito</h3><div class="hs-body">' +
+        '<div><span class="hs-label">Objetivo general:</span>Implementar y operar un sistema integral de cuidado post-hospitalario para pacientes con EVC y sus cuidadores, articulando los componentes clínicos, operativos, tecnológicos y de acompañamiento necesarios para la continuidad de la atención.</div>' +
+      '</div></div>' +
+
+      '<div class="home-section"><h3><span class="hs-num">3</span>Alcance</h3><div class="hs-body">' +
+        'ANA Care contempla la implementación y operación de un modelo de transición Hospital–Hogar para pacientes con EVC, integrando:' +
+        '<ul>' +
+          '<li>Operación hospitalaria y seguimiento post-egreso.</li>' +
+          '<li>Modelo clínico, protocolos, alertas y escalamiento.</li>' +
+          '<li>Call Center para acompañamiento y monitoreo.</li>' +
+          '<li>Plataforma tecnológica y herramientas de seguimiento.</li>' +
+          '<li>Contenidos educativos y de rehabilitación.</li>' +
+          '<li>Personal operativo, capacitación y supervisión.</li>' +
+          '<li>Equipamiento y materiales necesarios para la operación.</li>' +
+          '<li>Seguimiento y evaluación de resultados.</li>' +
+        '</ul>' +
+      '</div></div>' +
+
+      '<div class="home-section"><h3><span class="hs-num">4</span>Riesgos de alto nivel</h3><div class="hs-body"><ul>' +
+        '<li><span class="hs-label">Confirmación y formalización del proyecto:</span>la implementación depende de la formalización correspondiente con IMSS.</li>' +
+        '<li><span class="hs-label">Desarrollo tecnológico:</span>retrasos en la plataforma, integraciones o componentes tecnológicos pueden afectar la preparación y operación.</li>' +
+        '<li><span class="hs-label">Definición clínica:</span>retrasos en protocolos, alertas o criterios de escalamiento pueden afectar la implementación.</li>' +
+        '<li><span class="hs-label">Disponibilidad de personal:</span>la operación requiere personal hospitalario, Call Center y supervisión.</li>' +
+        '<li><span class="hs-label">Presupuesto y financiamiento:</span>la disponibilidad de recursos condiciona contrataciones, compras y otros componentes de implementación.</li>' +
+        '<li><span class="hs-label">Coordinación entre áreas:</span>los componentes del proyecto presentan dependencias entre sí y requieren coordinación para cumplir las fechas de implementación.</li>' +
+      '</ul></div></div>' +
+
+      '<div class="home-section"><h3><span class="hs-num">6</span>Responsables por área</h3><div class="hs-body">' +
+        '<table class="home-table"><thead><tr><th>Área</th><th>Responsable</th></tr></thead><tbody>' +
+          '<tr><td>Operación y RRHH</td><td>Zueldy</td></tr>' +
+          '<tr><td>Tecnología</td><td>Juan Carlos</td></tr>' +
+          '<tr><td>Gestión Clínica</td><td>David Barros</td></tr>' +
+          '<tr><td>Contenido</td><td>Nicna</td></tr>' +
+          '<tr><td>Administración</td><td>Marisol</td></tr>' +
+          '<tr><td>Legal</td><td>Por definir</td></tr>' +
+          '<tr><td>Dirección</td><td>Manuel y Ariel</td></tr>' +
+        '</tbody></table>' +
+      '</div></div>' +
+
+      '<div class="home-section"><h3><span class="hs-num">9</span>Cierre del proyecto</h3><div class="hs-body">' +
+        'Se contempla un periodo preoperativo comprendido del 15 de octubre de 2026 al 15 de enero de 2027, seguido de tres etapas de implementación:' +
+        '<div class="home-stages">' +
+          '<div class="home-stage"><div class="st-title">Etapa 1 · 15 ene – 15 abr 2027</div><div class="st-body">Operación en 10 hospitales de CDMX.</div></div>' +
+          '<div class="home-stage"><div class="st-title">Etapa 2 · 15 abr – 15 jul 2027</div><div class="st-body">Ampliación a 25 hospitales activos, incorporando Guadalajara.</div></div>' +
+          '<div class="home-stage"><div class="st-title">Etapa 3 · 15 jul – 15 oct 2027</div><div class="st-body">Ampliación a 50 hospitales activos, incorporando Nuevo León.</div></div>' +
+        '</div>' +
+        '<div style="margin-top:10px;">El cierre del proyecto se contempla para el <strong>15 de octubre de 2027</strong>.</div>' +
+      '</div></div>';
+  }
+
+  // ---------------- Documentación ----------------
+  var DOCUMENTOS = [
+    { icon:"📄", name:"CIF", desc:"Documento de referencia clínica", url:"" }
+    // Agrega más así: { icon:"📄", name:"Nombre", desc:"Descripción breve", url:"https://www.dropbox.com/.../archivo?dl=0" }
+  ];
+  function showDocs(){
+    state.view = "docs"; hideAllViews();
+    document.getElementById("viewDocs").style.display = "block";
+    renderDocs();
+    renderNav();
+  }
+  document.getElementById("navDocs").addEventListener("click", showDocs);
+  function renderDocs(){
+    var wrap = document.getElementById("docList");
+    wrap.innerHTML = "";
+    if (!DOCUMENTOS.length) { wrap.innerHTML = '<div class="act-empty">Todavía no hay documentos agregados.</div>'; return; }
+    DOCUMENTOS.forEach(function(d){
+      var row = document.createElement("div"); row.className = "doc-row";
+      row.innerHTML = '<span class="dr-icon">' + d.icon + '</span>' +
+        '<div><div class="dr-name">' + escapeHtml(d.name) + '</div><div class="dr-desc">' + escapeHtml(d.desc||"") + '</div></div>' +
+        '<span class="dr-open">' + (d.url ? "Abrir ↗" : "Enlace pendiente") + '</span>';
+      if (d.url) row.addEventListener("click", function(){ window.open(d.url, "_blank", "noopener"); });
+      wrap.appendChild(row);
+    });
+  }
+
+  // ---------------- Reportes ----------------
+  function showReportes(){
+    state.view = "reportes"; hideAllViews();
+    document.getElementById("viewReportes").style.display = "block";
+    renderNav();
+    if (!state.dbNS) { renderReporte(); return; }
+    var promises = AREAS.map(function(a){
+      return state.dbNS.doc("respuestas/"+a.slug).get().then(function(snap){ state.data[a.slug]=snap && snap.exists ? snap.data() : null; }).catch(function(){});
+    });
+    Promise.all(promises).then(renderReporte);
+  }
+  document.getElementById("navReportes").addEventListener("click", showReportes);
+  document.getElementById("refreshReporteBtn").addEventListener("click", showReportes);
+  document.getElementById("downloadReporteBtn").addEventListener("click", doExport);
+
+  function computeOverallPct(){
+    var total = 0, sum = 0;
+    AREAS.forEach(function(a){
+      var d = state.data[a.slug];
+      if (d && d.resultados) d.resultados.forEach(function(r){ (r.actividades||[]).forEach(function(act){
+        if (!act.nombre) return;
+        total++;
+        sum += act.estado === "Completado" ? 1 : act.estado === "En curso" ? 0.5 : 0;
+      }); });
+    });
+    return total ? Math.round((sum/total)*100) : 0;
+  }
+
+  function renderReporte(){
+    var body = document.getElementById("reporteBody");
+    var totalAreas = AREAS.length;
+    var respondidas = AREAS.filter(function(a){ return docStatus(state.data[a.slug]) !== "empty"; }).length;
+    var overallPct = computeOverallPct();
+
+    var html = '<div class="kpi-grid">' +
+      '<div class="kpi-card"><div class="kc-label">Áreas con respuesta</div><div class="kc-value">' + respondidas + '/' + totalAreas + '</div></div>' +
+      '<div class="kpi-card"><div class="kc-label">Avance de ejecución</div><div class="kc-value">' + overallPct + '%</div></div>' +
+      '</div>';
+
+    AREAS.forEach(function(a){
+      var d = state.data[a.slug];
+      var pct = computeAreaPct(d);
+      html += '<div class="home-section"><h3 style="justify-content:space-between;"><span>' + a.name + '</span><span style="font-size:12px; color:var(--teal-dark); font-weight:700;">' + pct + '% avance</span></h3><div class="hs-body">';
+      if (!d || !d.resultados || !d.resultados.length) {
+        html += '<em style="color:var(--text-soft);">Sin respuesta registrada.</em>';
+      } else {
+        d.resultados.forEach(function(r){
+          if (!r.texto) return;
+          html += '<div style="margin-bottom:8px;"><span class="hs-label">' + escapeHtml(r.texto) + '</span></div><ul>';
+          (r.actividades||[]).forEach(function(act){
+            if (!act.nombre) return;
+            html += '<li>' + escapeHtml(act.nombre) + ' — ' + fmtTiempo(act) + ', compromiso ' + (act.fecha_compromiso||"—") + ' <em>(' + (act.estado||"Pendiente") + ')</em></li>';
+          });
+          html += '</ul>';
+        });
+      }
+      html += '</div></div>';
+    });
+    body.innerHTML = html;
+  }
+
+  // ---------------- Dashboard ----------------
+  var chartInstances = {};
+  function destroyChart(id){ if (chartInstances[id]) { chartInstances[id].destroy(); delete chartInstances[id]; } }
+  function showDashboard(){
+    state.view = "dashboard"; hideAllViews();
+    document.getElementById("viewDashboard").style.display = "block";
+    renderNav();
+    if (!state.dbNS) { renderDashboard(); return; }
+    var promises = AREAS.map(function(a){
+      return state.dbNS.doc("respuestas/"+a.slug).get().then(function(snap){ state.data[a.slug]=snap && snap.exists ? snap.data() : null; }).catch(function(){});
+    });
+    Promise.all(promises).then(renderDashboard);
+  }
+  document.getElementById("navDashboard").addEventListener("click", showDashboard);
+
+  function renderDashboard(){
+    var labels = AREAS.map(function(a){ return a.name; });
+    var pctData = AREAS.map(function(a){ return computeAreaPct(state.data[a.slug]); });
+    var countData = AREAS.map(function(a){
+      var d = state.data[a.slug]; var n = 0;
+      if (d && d.resultados) d.resultados.forEach(function(r){ n += (r.actividades||[]).filter(function(x){return x.nombre;}).length; });
+      return n;
+    });
+    var totalActs = 0, estadoCount = {"Pendiente":0, "En curso":0, "Completado":0};
+    AREAS.forEach(function(a){
+      var d = state.data[a.slug];
+      if (d && d.resultados) d.resultados.forEach(function(r){ (r.actividades||[]).forEach(function(act){
+        if (!act.nombre) return;
+        totalActs++;
+        var e = act.estado || "Pendiente";
+        estadoCount[e] = (estadoCount[e]||0) + 1;
+      }); });
+    });
+    var respondidas = AREAS.filter(function(a){ return docStatus(state.data[a.slug]) !== "empty"; }).length;
+    var overallPct = computeOverallPct();
+
+    document.getElementById("dashKpis").innerHTML =
+      '<div class="kpi-card"><div class="kc-label">Áreas con respuesta</div><div class="kc-value">' + respondidas + '/' + AREAS.length + '</div></div>' +
+      '<div class="kpi-card"><div class="kc-label">Actividades capturadas</div><div class="kc-value">' + totalActs + '</div></div>' +
+      '<div class="kpi-card"><div class="kc-label">Avance de ejecución</div><div class="kc-value">' + overallPct + '%</div><div class="kc-sub">' + estadoCount["Completado"] + ' completadas · ' + estadoCount["En curso"] + ' en curso · ' + estadoCount["Pendiente"] + ' pendientes</div></div>' +
+      '<div class="kpi-card"><div class="kc-label">Arranque objetivo</div><div class="kc-value">15 ene</div><div class="kc-sub">2027</div></div>';
+
+    if (typeof Chart === "undefined") return; // sin internet / CDN bloqueado: se quedan solo los KPIs
+
+    destroyChart("areaProgress");
+    chartInstances.areaProgress = new Chart(document.getElementById("chartAreaProgress"), {
+      type: "bar",
+      data: { labels: labels, datasets: [{ label: "% avance", data: pctData, backgroundColor: "#2f8f83" }] },
+      options: { responsive:true, scales: { y: { beginAtZero:true, max:100 } }, plugins:{ legend:{ display:false } } }
+    });
+
+    destroyChart("areaCount");
+    chartInstances.areaCount = new Chart(document.getElementById("chartAreaCount"), {
+      type: "bar",
+      data: { labels: labels, datasets: [{ label: "Actividades", data: countData, backgroundColor: "#1c3452" }] },
+      options: { responsive:true, indexAxis:"y", plugins:{ legend:{ display:false } } }
+    });
+
+    destroyChart("estadoDist");
+    chartInstances.estadoDist = new Chart(document.getElementById("chartEstadoDist"), {
+      type: "doughnut",
+      data: { labels: ["Pendiente","En curso","Completado"], datasets: [{ data: [estadoCount["Pendiente"], estadoCount["En curso"], estadoCount["Completado"]], backgroundColor: ["#cfc6ab","#b98a2e","#2f8f4e"] } ] },
+      options: { responsive:true }
+    });
+
+    var target = new Date(2027,0,15);
+    var diasFaltantes = Math.round((target - new Date())/86400000);
+    destroyChart("cierre");
+    chartInstances.cierre = new Chart(document.getElementById("chartCierre"), {
+      type: "bar",
+      data: { labels: ["Días al arranque objetivo"], datasets: [{ label:"Días", data:[diasFaltantes], backgroundColor: diasFaltantes >= 0 ? "#2f8f83" : "#b5533f" }] },
+      options: { responsive:true, plugins:{ legend:{ display:false } } }
+    });
+  }
+
+  var state = { currentArea: null, currentActArea: null, view: "home", data: {}, resultados: [], dbNS: null, saving: false };
 
   function uid(p){ return p + Math.random().toString(36).slice(2,9); }
   function emptyActividad(){ return { id: uid("a"), nombre:"", predecesor_id:"", dependencias:[], tiempo_valor:"", tiempo_unidad:"semanas", fecha_compromiso:"", comentario:"", estado:"Pendiente" }; }
@@ -617,6 +939,9 @@
   function renderNav(){
     document.getElementById("navMapa").className = "nav-item" + (state.view==="mapa" ? " active":"");
     document.getElementById("navRuta").className = "nav-item" + (state.view==="ruta" ? " active":"");
+    document.getElementById("navDocs").className = "nav-item" + (state.view==="docs" ? " active":"");
+    document.getElementById("navReportes").className = "nav-item" + (state.view==="reportes" ? " active":"");
+    document.getElementById("navDashboard").className = "nav-item" + (state.view==="dashboard" ? " active":"");
 
     var navLev = document.getElementById("navLevantamiento");
     var subLev = document.getElementById("subgroupLevantamiento");
@@ -1379,6 +1704,8 @@
 
   // ---------------- Init ----------------
   hideAllViews();
+  document.getElementById("viewHome").style.display = "block";
+  renderHome();
   renderNav();
 
   function showConnBanner(msg){
@@ -1424,6 +1751,8 @@
       if (state.view === "actividadesArea" && state.currentActArea) selectActividadesArea(state.currentActArea);
       if (state.view === "actividadesOverview") loadAllDocs();
       if (state.view === "ruta") showRuta();
+      if (state.view === "reportes") showReportes();
+      if (state.view === "dashboard") showDashboard();
     } catch(e) {
       if (!isRetry) setTimeout(function(){ connectDb(true); }, 1500);
       else showConnBanner("No se pudo conectar con la base de datos (Firebase). Revisa que FIREBASE_CONFIG sea correcto y que Firestore esté activado en tu proyecto.");
