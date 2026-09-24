@@ -13,10 +13,10 @@
     --teal: #2f8f83;
     --teal-dark: #1f6f65;
     --teal-light: #e4f2ef;
-    --res-bg: #f7eefb;
-    --res-border: #ddbfec;
-    --res-accent: #8a4bb0;
-    --res-accent-dark: #6a3689;
+    --res-bg: #fdf1e9;
+    --res-border: #edc4a4;
+    --res-accent: #d8703a;
+    --res-accent-dark: #a8501f;
     --act-bg: #eef1f7;
     --act-border: #c4cee0;
     --row-alt: #f6f8fb;
@@ -59,7 +59,7 @@
   .nav-item.panel-link { border:1px solid #3a5578; margin-top:10px; flex-shrink:0; }
   .nav-parent { display:flex; align-items:center; gap:7px; padding:8px 9px; border-radius:7px; cursor:pointer; font-size:12.8px; color:#dbe4f0; margin-bottom:1px; }
   .nav-parent:hover { background:var(--navy-2); }
-  .nav-parent .caret { font-size:10px; color:#8ea1ba; transition:transform .15s; width:10px; flex-shrink:0; }
+  .nav-parent .caret { font-size:10px; color:#8ea1ba; transition:transform .15s; width:10px; flex-shrink:0; margin-left:auto; text-align:right; }
   .nav-parent.expanded .caret { transform:rotate(90deg); }
   .nav-subgroup { max-height:0; overflow:hidden; transition:max-height .18s ease; padding-left:6px; }
   .nav-subgroup.expanded { max-height:600px; }
@@ -81,7 +81,7 @@
   label .req-star { color:var(--danger); }
   input[type=text], input[type=date], input[type=number], input[type=password], textarea, select {
     width:100%; font-family:inherit; font-size:12.5px; padding:6px 8px; border-radius:6px;
-    border:1px solid var(--border); background:#fff; color:var(--text);
+    border:1.5px solid #c3c8d1; background:#fff; color:var(--text);
   }
   select { cursor:pointer; }
   textarea { resize:vertical; min-height:30px; font-family:inherit; }
@@ -90,6 +90,7 @@
   .row2 { display:grid; grid-template-columns:1fr 1fr; gap:7px; }
 
   .resultado-block { border:1px solid var(--res-border); border-left:4px solid var(--res-accent); border-radius:8px; padding:10px 12px 12px; margin-bottom:13px; background:var(--res-bg); }
+  .resultado-block input[type=text] { border-color:var(--res-accent); box-shadow:0 1px 2px rgba(168,80,31,0.12); }
   .resultado-block .rhead { display:flex; align-items:center; justify-content:space-between; margin-bottom:5px; }
   .rhead .rnum { font-size:11px; font-weight:700; color:var(--res-accent-dark); text-transform:uppercase; letter-spacing:0.3px; }
   .resultado-block label { color:var(--res-accent-dark); }
@@ -114,7 +115,7 @@
   td.num-cell { text-align:center; vertical-align:middle !important; }
   .act-badge { display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; border-radius:50%;
     background:var(--navy); color:#fff; font-size:11px; font-weight:700; }
-  td textarea.act-input { min-height:52px; font-size:12.3px; }
+  td textarea.act-input { min-height:52px; font-size:12.3px; border-color:var(--navy-2); }
 
   .dep-pair { border:1px solid var(--border); border-radius:6px; padding:5px 6px; margin-bottom:5px; background:#fbfbfd; }
   .dep-pair .dep-pair-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:3px; }
@@ -224,6 +225,15 @@
   .act-row .ar-body { flex:1; min-width:0; }
   .act-row .ar-name { font-size:12.8px; color:var(--text); }
   .act-row .ar-meta { font-size:10.6px; color:var(--text-soft); margin-top:2px; }
+  table.act-table { width:100%; border-collapse:collapse; font-size:12.5px; }
+  table.act-table th { text-align:left; padding:10px 12px; background:var(--navy); color:#fff; font-size:10.5px; text-transform:uppercase; letter-spacing:0.3px; }
+  table.act-table td { padding:9px 12px; border-bottom:1px solid var(--border); vertical-align:middle; }
+  table.act-table td.center { text-align:center; color:var(--text-soft); font-weight:700; }
+  table.act-table input[type=date] { max-width:150px; }
+  .estado-badge { display:inline-block; font-size:11px; font-weight:700; padding:3px 10px; border-radius:999px; white-space:nowrap; }
+  .estado-badge.pendiente { background:#ececee; color:var(--text-soft); }
+  .estado-badge.en-curso { background:#fbeed6; color:var(--pending); }
+  .estado-badge.completado { background:#e2f3e6; color:var(--ok); }
   .act-row select.ar-estado { width:130px; flex-shrink:0; font-size:11.5px; }
   .act-row select.ar-estado.pendiente { color:var(--text-soft); }
   .act-row select.ar-estado.en-curso { color:var(--pending); }
@@ -298,7 +308,7 @@
   .chart-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(340px,1fr)); gap:14px; }
   .chart-card { background:var(--panel-bg); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); padding:16px 18px; }
   .chart-card h4 { margin:0 0 10px; font-size:13px; color:var(--navy); }
-  .chart-card canvas { max-height:260px; }
+  .chart-card canvas { max-height:260px; height:260px !important; }
   .conn-banner { background:#fbeae5; border:1px solid #eec3b6; border-radius:var(--radius); padding:11px 14px; margin-bottom:12px; font-size:12.5px; color:#8a3a25; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
   .recovery-actions { margin-top:7px; display:flex; gap:8px; flex-wrap:wrap; }
 
@@ -323,6 +333,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
 <script>
   // === PEGA AQUÍ TU CONFIGURACIÓN DE FIREBASE (reemplaza este objeto) ===
   var FIREBASE_CONFIG = {
@@ -348,9 +359,9 @@
       <div class="nav-item" id="navMapa"><span>1.</span><div class="label"><span class="name">Mapa funcional</span></div></div>
 
       <div class="nav-parent" id="navActividades">
-        <span class="caret">▸</span>
         <span>2.</span>
         <div class="label"><span class="name">Actividades</span></div>
+        <span class="caret">▸</span>
       </div>
       <div class="nav-subgroup" id="subgroupActividades"></div>
 
@@ -361,8 +372,8 @@
 
       <div class="nav-section-label">Captura</div>
       <div class="nav-parent" id="navLevantamiento">
-        <span class="caret">▸</span>
         <div class="label"><span class="name">Captura de actividades</span></div>
+        <span class="caret">▸</span>
       </div>
       <div class="nav-subgroup" id="subgroupLevantamiento"></div>
     </div>
@@ -419,9 +430,9 @@
           </div>
 
           <div class="card">
-            <h3>6. ¿Falta algo?</h3>
-            <p class="hint"><strong>6.</strong> ¿Alguna actividad indispensable para el arranque que no esté contemplada arriba?</p>
-            <textarea id="extra" placeholder="Escribe aquí si hace falta algo (opcional)..."></textarea>
+            <h3>Documentos de apoyo</h3>
+            <p class="hint">Si hay algún documento (protocolo, cotización, manual, etc.) que ayude a entender las actividades de arriba, pega aquí el link donde vive (Drive, Dropbox, etc.) — uno por línea. El documento no se sube aquí, solo el enlace.</p>
+            <textarea id="extra" placeholder="https://... (uno por línea, opcional)"></textarea>
           </div>
 
           <div class="actions-bar">
@@ -446,7 +457,7 @@
       <div id="viewActividadesOverview" style="display:none;">
         <div class="intro">
           <h2>Actividades</h2>
-          <p>Seguimiento de avance de las actividades que cada área capturó en el levantamiento. Elige un área en el menú o en la lista para marcar el estado de cada actividad.</p>
+          <p>Seguimiento de avance de las actividades que cada área capturó. Elige un área en el menú o en la lista para ver el detalle y registrar sus fechas reales de inicio y término.</p>
         </div>
         <div class="top-actions">
           <button class="btn teal" id="exportOverviewBtn">Exportar todo (para ruta crítica)</button>
@@ -459,7 +470,7 @@
       <div id="viewActividadesArea" style="display:none;">
         <div class="intro">
           <h2 id="actAreaTitle">Actividades</h2>
-          <p>Marca el estado real de cada actividad. El % de avance se calcula solo (Pendiente = 0%, En curso = 50%, Completado = 100%).</p>
+          <p>Registra la fecha real de inicio y de término de cada actividad. El estado y el % de avance se calculan solos: sin fecha de inicio = Pendiente, con inicio y sin fin = En curso, con fecha de fin = Terminado.</p>
         </div>
         <div class="progress-wrap" id="actAreaProgressWrap"></div>
         <div class="act-list" id="actAreaList"></div>
@@ -496,11 +507,6 @@
       <div id="viewReportes" style="display:none;">
         <div class="intro">
           <h2>Reportes</h2>
-          <p>Resumen ejecutivo del estado del proyecto, generado a partir de lo capturado hasta ahora.</p>
-        </div>
-        <div class="top-actions">
-          <button class="btn" id="refreshReporteBtn">↻ Actualizar</button>
-          <button class="btn teal" id="downloadReporteBtn">Descargar reporte (.txt)</button>
         </div>
         <div id="reporteBody"></div>
       </div>
@@ -516,11 +522,10 @@
           <div class="chart-card"><h4>Avance de ejecución por área</h4><canvas id="chartAreaProgress"></canvas></div>
           <div class="chart-card"><h4>Actividades capturadas por área</h4><canvas id="chartAreaCount"></canvas></div>
           <div class="chart-card"><h4>Distribución de estado</h4><canvas id="chartEstadoDist"></canvas></div>
-          <div class="chart-card"><h4>Cierre estimado vs. objetivo</h4><canvas id="chartCierre"></canvas></div>
         </div>
       </div>
 
-      <footer class="note">Herramienta interna de coordinación · Proyecto IMSS / ANA Care</footer>
+      <footer class="note">Proyecto IMSS / ANA Care</footer>
     </div>
   </main>
 </div>
@@ -674,7 +679,7 @@
         '<li><span class="hs-label">Coordinación entre áreas:</span>los componentes del proyecto presentan dependencias entre sí y requieren coordinación para cumplir las fechas de implementación.</li>' +
       '</ul></div></div>' +
 
-      '<div class="home-section"><h3><span class="hs-num">6</span>Responsables por área</h3><div class="hs-body">' +
+      '<div class="home-section"><h3><span class="hs-num">5</span>Responsables por área</h3><div class="hs-body">' +
         '<table class="home-table"><thead><tr><th>Área</th><th>Responsable</th></tr></thead><tbody>' +
           '<tr><td>Operación y RRHH</td><td>Zueldy</td></tr>' +
           '<tr><td>Tecnología</td><td>Juan Carlos</td></tr>' +
@@ -686,7 +691,7 @@
         '</tbody></table>' +
       '</div></div>' +
 
-      '<div class="home-section"><h3><span class="hs-num">9</span>Cierre del proyecto</h3><div class="hs-body">' +
+      '<div class="home-section"><h3><span class="hs-num">6</span>Cierre del proyecto</h3><div class="hs-body">' +
         'Se contempla un periodo preoperativo comprendido del 15 de octubre de 2026 al 15 de enero de 2027, seguido de tres etapas de implementación:' +
         '<div class="home-stages">' +
           '<div class="home-stage"><div class="st-title">Etapa 1 · 15 ene – 15 abr 2027</div><div class="st-body">Operación en 10 hospitales de CDMX.</div></div>' +
@@ -699,7 +704,8 @@
 
   // ---------------- Documentación ----------------
   var DOCUMENTOS = [
-    { icon:"📄", name:"CIF", desc:"Documento de referencia clínica", url:"" }
+    { icon:"📄", name:"CIF", desc:"Documento de referencia clínica", url:"" },
+    { icon:"📋", name:"Guía para Documentación — Due Diligence", desc:"Documentación recomendada para evaluación de financiamiento (BID/IMSS) — Paz Mental/ANA Care, julio 2026", url:"" }
     // Agrega más así: { icon:"📄", name:"Nombre", desc:"Descripción breve", url:"https://www.dropbox.com/.../archivo?dl=0" }
   ];
   function showDocs(){
@@ -724,20 +730,6 @@
   }
 
   // ---------------- Reportes ----------------
-  function showReportes(){
-    state.view = "reportes"; hideAllViews();
-    document.getElementById("viewReportes").style.display = "block";
-    renderNav();
-    if (!state.dbNS) { renderReporte(); return; }
-    var promises = AREAS.map(function(a){
-      return state.dbNS.doc("respuestas/"+a.slug).get().then(function(snap){ state.data[a.slug]=snap && snap.exists ? snap.data() : null; }).catch(function(){});
-    });
-    Promise.all(promises).then(renderReporte);
-  }
-  document.getElementById("navReportes").addEventListener("click", showReportes);
-  document.getElementById("refreshReporteBtn").addEventListener("click", showReportes);
-  document.getElementById("downloadReporteBtn").addEventListener("click", doExport);
-
   function computeOverallPct(){
     var total = 0, sum = 0;
     AREAS.forEach(function(a){
@@ -745,44 +737,25 @@
       if (d && d.resultados) d.resultados.forEach(function(r){ (r.actividades||[]).forEach(function(act){
         if (!act.nombre) return;
         total++;
-        sum += act.estado === "Completado" ? 1 : act.estado === "En curso" ? 0.5 : 0;
+        var e = getEstadoAuto(act);
+        sum += e === "Completado" ? 1 : e === "En curso" ? 0.5 : 0;
       }); });
     });
     return total ? Math.round((sum/total)*100) : 0;
   }
 
-  function renderReporte(){
-    var body = document.getElementById("reporteBody");
-    var totalAreas = AREAS.length;
-    var respondidas = AREAS.filter(function(a){ return docStatus(state.data[a.slug]) !== "empty"; }).length;
-    var overallPct = computeOverallPct();
-
-    var html = '<div class="kpi-grid">' +
-      '<div class="kpi-card"><div class="kc-label">Áreas con respuesta</div><div class="kc-value">' + respondidas + '/' + totalAreas + '</div></div>' +
-      '<div class="kpi-card"><div class="kc-label">Avance de ejecución</div><div class="kc-value">' + overallPct + '%</div></div>' +
+  function showReportes(){
+    state.view = "reportes"; hideAllViews();
+    document.getElementById("viewReportes").style.display = "block";
+    renderNav();
+    document.getElementById("reporteBody").innerHTML =
+      '<div class="home-section" style="text-align:center; padding:40px 20px;">' +
+        '<div style="font-size:32px; margin-bottom:10px;">🚧</div>' +
+        '<h3 style="justify-content:center;">En construcción</h3>' +
+        '<div class="hs-body">Los reportes se activarán una vez que el proyecto quede formalizado.</div>' +
       '</div>';
-
-    AREAS.forEach(function(a){
-      var d = state.data[a.slug];
-      var pct = computeAreaPct(d);
-      html += '<div class="home-section"><h3 style="justify-content:space-between;"><span>' + a.name + '</span><span style="font-size:12px; color:var(--teal-dark); font-weight:700;">' + pct + '% avance</span></h3><div class="hs-body">';
-      if (!d || !d.resultados || !d.resultados.length) {
-        html += '<em style="color:var(--text-soft);">Sin respuesta registrada.</em>';
-      } else {
-        d.resultados.forEach(function(r){
-          if (!r.texto) return;
-          html += '<div style="margin-bottom:8px;"><span class="hs-label">' + escapeHtml(r.texto) + '</span></div><ul>';
-          (r.actividades||[]).forEach(function(act){
-            if (!act.nombre) return;
-            html += '<li>' + escapeHtml(act.nombre) + ' — ' + fmtTiempo(act) + ', compromiso ' + (act.fecha_compromiso||"—") + ' <em>(' + (act.estado||"Pendiente") + ')</em></li>';
-          });
-          html += '</ul>';
-        });
-      }
-      html += '</div></div>';
-    });
-    body.innerHTML = html;
   }
+  document.getElementById("navReportes").addEventListener("click", showReportes);
 
   // ---------------- Dashboard ----------------
   var chartInstances = {};
@@ -813,56 +786,82 @@
       if (d && d.resultados) d.resultados.forEach(function(r){ (r.actividades||[]).forEach(function(act){
         if (!act.nombre) return;
         totalActs++;
-        var e = act.estado || "Pendiente";
+        var e = getEstadoAuto(act);
         estadoCount[e] = (estadoCount[e]||0) + 1;
       }); });
     });
     var respondidas = AREAS.filter(function(a){ return docStatus(state.data[a.slug]) !== "empty"; }).length;
     var overallPct = computeOverallPct();
+    var target = new Date(2027,0,15);
+    var hoy0 = new Date(); hoy0.setHours(0,0,0,0);
+    var diasFaltantes = Math.round((target - hoy0)/86400000);
 
     document.getElementById("dashKpis").innerHTML =
       '<div class="kpi-card"><div class="kc-label">Áreas con respuesta</div><div class="kc-value">' + respondidas + '/' + AREAS.length + '</div></div>' +
       '<div class="kpi-card"><div class="kc-label">Actividades capturadas</div><div class="kc-value">' + totalActs + '</div></div>' +
       '<div class="kpi-card"><div class="kc-label">Avance de ejecución</div><div class="kc-value">' + overallPct + '%</div><div class="kc-sub">' + estadoCount["Completado"] + ' completadas · ' + estadoCount["En curso"] + ' en curso · ' + estadoCount["Pendiente"] + ' pendientes</div></div>' +
-      '<div class="kpi-card"><div class="kc-label">Arranque objetivo</div><div class="kc-value">15 ene</div><div class="kc-sub">2027</div></div>';
+      '<div class="kpi-card"><div class="kc-label">Arranque objetivo</div><div class="kc-value">15 ene</div><div class="kc-sub">2027</div></div>' +
+      '<div class="kpi-card"><div class="kc-label">' + (diasFaltantes >= 0 ? "Días al arranque" : "Días desde el arranque") + '</div><div class="kc-value" style="color:' + (diasFaltantes>=0?"var(--teal-dark)":"var(--danger)") + ';">' + Math.abs(diasFaltantes) + '</div></div>';
 
     if (typeof Chart === "undefined") return; // sin internet / CDN bloqueado: se quedan solo los KPIs
+    if (typeof ChartDataLabels !== "undefined" && !Chart.__anaLabelsRegistered) {
+      Chart.register(ChartDataLabels);
+      Chart.__anaLabelsRegistered = true;
+    }
+    var dlPlugins = typeof ChartDataLabels !== "undefined" ? [ChartDataLabels] : [];
 
     destroyChart("areaProgress");
     chartInstances.areaProgress = new Chart(document.getElementById("chartAreaProgress"), {
       type: "bar",
       data: { labels: labels, datasets: [{ label: "% avance", data: pctData, backgroundColor: "#2f8f83" }] },
-      options: { responsive:true, scales: { y: { beginAtZero:true, max:100 } }, plugins:{ legend:{ display:false } } }
+      plugins: dlPlugins,
+      options: {
+        responsive:true, maintainAspectRatio:false,
+        scales: { y: { beginAtZero:true, max:100 }, x: { ticks: { autoSkip:false, maxRotation:38, minRotation:0, font:{ size:10 } } } },
+        plugins: { legend:{ display:false }, datalabels: { anchor:"end", align:"top", color:"#1c3452", font:{ weight:"bold", size:10.5 }, formatter: function(v){ return v + "%"; } } }
+      }
     });
 
     destroyChart("areaCount");
     chartInstances.areaCount = new Chart(document.getElementById("chartAreaCount"), {
       type: "bar",
       data: { labels: labels, datasets: [{ label: "Actividades", data: countData, backgroundColor: "#1c3452" }] },
-      options: { responsive:true, indexAxis:"y", plugins:{ legend:{ display:false } } }
+      plugins: dlPlugins,
+      options: {
+        responsive:true, maintainAspectRatio:false, indexAxis:"y",
+        scales: { x: { beginAtZero:true, ticks:{ precision:0 } }, y: { ticks: { autoSkip:false, font:{ size:10 } } } },
+        plugins: { legend:{ display:false }, datalabels: { anchor:"end", align:"right", color:"#1c3452", font:{ weight:"bold", size:10.5 }, formatter: function(v){ return v; } } }
+      }
     });
 
     destroyChart("estadoDist");
+    var estadoLabels = ["Pendiente","En curso","Completado"];
+    var estadoVals = [estadoCount["Pendiente"], estadoCount["En curso"], estadoCount["Completado"]];
     chartInstances.estadoDist = new Chart(document.getElementById("chartEstadoDist"), {
       type: "doughnut",
-      data: { labels: ["Pendiente","En curso","Completado"], datasets: [{ data: [estadoCount["Pendiente"], estadoCount["En curso"], estadoCount["Completado"]], backgroundColor: ["#cfc6ab","#b98a2e","#2f8f4e"] } ] },
-      options: { responsive:true }
-    });
-
-    var target = new Date(2027,0,15);
-    var diasFaltantes = Math.round((target - new Date())/86400000);
-    destroyChart("cierre");
-    chartInstances.cierre = new Chart(document.getElementById("chartCierre"), {
-      type: "bar",
-      data: { labels: ["Días al arranque objetivo"], datasets: [{ label:"Días", data:[diasFaltantes], backgroundColor: diasFaltantes >= 0 ? "#2f8f83" : "#b5533f" }] },
-      options: { responsive:true, plugins:{ legend:{ display:false } } }
+      data: { labels: estadoLabels, datasets: [{ data: estadoVals, backgroundColor: ["#cfc6ab","#b98a2e","#2f8f4e"] } ] },
+      plugins: dlPlugins,
+      options: {
+        responsive:true, maintainAspectRatio:false,
+        plugins: {
+          legend: { position:"bottom" },
+          datalabels: {
+            color:"#fff", font:{ weight:"bold", size:11 },
+            formatter: function(v, ctx){
+              var total = estadoVals.reduce(function(a,b){return a+b;}, 0);
+              var pct = total ? Math.round((v/total)*100) : 0;
+              return v + " (" + pct + "%)";
+            }
+          }
+        }
+      }
     });
   }
 
   var state = { currentArea: null, currentActArea: null, view: "home", data: {}, resultados: [], dbNS: null, saving: false };
 
   function uid(p){ return p + Math.random().toString(36).slice(2,9); }
-  function emptyActividad(){ return { id: uid("a"), nombre:"", predecesor_id:"", dependencias:[], tiempo_valor:"", tiempo_unidad:"semanas", fecha_compromiso:"", comentario:"", estado:"Pendiente" }; }
+  function emptyActividad(){ return { id: uid("a"), nombre:"", predecesor_id:"", dependencias:[], tiempo_valor:"", tiempo_unidad:"semanas", fecha_compromiso:"", comentario:"", real_inicio:"", real_fin:"" }; }
   function emptyResultado(){ return { id: uid("r"), texto:"", actividades:[ emptyActividad(), emptyActividad() ] }; }
   function areaBySlug(s){ for (var i=0;i<AREAS.length;i++) if (AREAS[i].slug===s) return AREAS[i]; return null; }
   function exFor(s){ return EXAMPLES[s] || {resultado:"",actividad:"",depende:""}; }
@@ -924,13 +923,19 @@
   // ---------------- Sidebar nav ----------------
   var navExpanded = { levantamiento:false, actividades:false };
 
+  function getEstadoAuto(a){
+    if (a.real_fin) return "Completado";
+    if (a.real_inicio) return "En curso";
+    return "Pendiente";
+  }
   function computeAreaPct(d){
     if (!d || !d.resultados) return 0;
     var total = 0, sum = 0;
     d.resultados.forEach(function(r){ (r.actividades||[]).forEach(function(a){
       if (!a.nombre) return;
       total++;
-      var w = a.estado === "Completado" ? 1 : a.estado === "En curso" ? 0.5 : 0;
+      var e = getEstadoAuto(a);
+      var w = e === "Completado" ? 1 : e === "En curso" ? 0.5 : 0;
       sum += w;
     }); });
     return total ? Math.round((sum/total)*100) : 0;
@@ -1012,7 +1017,8 @@
     if (a.dependencias !== undefined) {
       if (a.comentario === undefined) a.comentario = "";
       if (a.predecesor_id === undefined) a.predecesor_id = "";
-      if (a.estado === undefined) a.estado = "Pendiente";
+      if (a.real_inicio === undefined) a.real_inicio = "";
+      if (a.real_fin === undefined) a.real_fin = "";
       return a;
     }
     var deps = [];
@@ -1021,7 +1027,7 @@
     } else if (a.dep_area && a.dep_area !== "Ninguna" && a.dep_area.indexOf("Ninguna")!==0) {
       deps = [ { area:a.dep_area, detalle:a.dep_detalle||"" } ];
     }
-    return { id:a.id||uid("a"), nombre:a.nombre||"", predecesor_id:"", dependencias:deps, tiempo_valor:a.tiempo_valor||"", tiempo_unidad:a.tiempo_unidad||"semanas", fecha_compromiso:a.fecha_compromiso||a.fecha_limite||"", comentario:a.comentario||"", estado:a.estado||"Pendiente" };
+    return { id:a.id||uid("a"), nombre:a.nombre||"", predecesor_id:"", dependencias:deps, tiempo_valor:a.tiempo_valor||"", tiempo_unidad:a.tiempo_unidad||"semanas", fecha_compromiso:a.fecha_compromiso||a.fecha_limite||"", comentario:a.comentario||"", real_inicio:"", real_fin:"" };
   }
 
   function applyDocToForm(d, slug){
@@ -1424,13 +1430,15 @@
     });
   }
 
-  function updateEstado(slug, actId, nuevoEstado){
+  function updateActFecha(slug, actId, field, value){
     var d = state.data[slug];
     if (!d) { showConnBanner("No se pudo actualizar: esta área no cargó datos (sin conexión). Recarga la página."); return; }
-    (d.resultados||[]).forEach(function(r){ (r.actividades||[]).forEach(function(a){ if (a.id === actId) a.estado = nuevoEstado; }); });
+    (d.resultados||[]).forEach(function(r){ (r.actividades||[]).forEach(function(a){
+      if (a.id === actId) { if (field==="real_inicio") a.real_inicio = value; if (field==="real_fin") a.real_fin = value; }
+    }); });
     renderActAreaList(slug);
     if (!state.dbNS) { showConnBanner("Cambio aplicado solo en esta pantalla: no hay conexión con la base de datos, así que no se guardó. Reintenta la conexión."); return; }
-    state.dbNS.doc("respuestas/"+slug).set(d).catch(function(){ showConnBanner("No se pudo guardar este cambio de estado. Verifica tu conexión e inténtalo de nuevo."); });
+    state.dbNS.doc("respuestas/"+slug).set(d).catch(function(){ showConnBanner("No se pudo guardar este cambio. Verifica tu conexión e inténtalo de nuevo."); });
   }
 
   function renderActAreaList(slug){
@@ -1439,28 +1447,46 @@
     renderProgressBar("actAreaProgressWrap", areaBySlug(slug).name + " — avance de ejecución", pct, "");
     var wrap = document.getElementById("actAreaList");
     wrap.innerHTML = "";
-    var any = false, n = 0;
+    var rows = [];
     (d && d.resultados || []).forEach(function(r){
       (r.actividades || []).forEach(function(a){
-        if (!a.nombre) return;
-        any = true; n++;
-        var row = document.createElement("div"); row.className = "act-row";
-        row.innerHTML = '<div class="ar-num">' + n + '</div>' +
-          '<div class="ar-body"><div class="ar-name">' + escapeHtml(a.nombre) + '</div>' +
-          '<div class="ar-meta">' + escapeHtml(r.texto||"") + ' · ' + escapeHtml(fmtTiempo(a)) + ' · compromiso ' + escapeHtml(a.fecha_compromiso||"—") + '</div></div>';
-        var sel = document.createElement("select"); sel.className = "ar-estado";
-        ["Pendiente","En curso","Completado"].forEach(function(op){
-          var o = document.createElement("option"); o.value = op; o.textContent = op;
-          if ((a.estado||"Pendiente") === op) o.selected = true;
-          sel.appendChild(o);
-        });
-        sel.className = "ar-estado " + (a.estado==="Completado"?"completado":a.estado==="En curso"?"en-curso":"pendiente");
-        sel.addEventListener("change", function(){ updateEstado(slug, a.id, sel.value); });
-        row.appendChild(sel);
-        wrap.appendChild(row);
+        if (a.nombre) rows.push({ a:a, r:r });
       });
     });
-    if (!any) wrap.innerHTML = '<div class="act-empty">Esta área todavía no ha capturado actividades en el levantamiento.</div>';
+    if (!rows.length) { wrap.innerHTML = '<div class="act-empty">Esta área todavía no ha capturado actividades.</div>'; return; }
+
+    var table = document.createElement("table");
+    table.className = "act-table";
+    table.innerHTML = '<thead><tr><th>ID</th><th>Actividad</th><th>Fecha inicio</th><th>Fecha fin</th><th>Estado</th></tr></thead>';
+    var tbody = document.createElement("tbody");
+    rows.forEach(function(item, i){
+      var a = item.a, r = item.r;
+      var tr = document.createElement("tr");
+      var estado = getEstadoAuto(a);
+      var badgeClass = estado==="Completado" ? "completado" : estado==="En curso" ? "en-curso" : "pendiente";
+
+      var tdId = document.createElement("td"); tdId.className = "center"; tdId.textContent = i+1;
+      var tdAct = document.createElement("td");
+      tdAct.innerHTML = '<div class="ar-name">' + escapeHtml(a.nombre) + '</div><div class="ar-meta">' + escapeHtml(r.texto||"") + ' · ' + escapeHtml(fmtTiempo(a)) + ' · compromiso ' + escapeHtml(a.fecha_compromiso||"—") + '</div>';
+
+      var tdInicio = document.createElement("td");
+      var iniI = document.createElement("input"); iniI.type = "date"; iniI.value = a.real_inicio || "";
+      iniI.addEventListener("input", function(){ updateActFecha(slug, a.id, "real_inicio", iniI.value); });
+      tdInicio.appendChild(iniI);
+
+      var tdFin = document.createElement("td");
+      var finI = document.createElement("input"); finI.type = "date"; finI.value = a.real_fin || "";
+      finI.addEventListener("input", function(){ updateActFecha(slug, a.id, "real_fin", finI.value); });
+      tdFin.appendChild(finI);
+
+      var tdEstado = document.createElement("td");
+      tdEstado.innerHTML = '<span class="estado-badge ' + badgeClass + '">' + estado + '</span>';
+
+      tr.appendChild(tdId); tr.appendChild(tdAct); tr.appendChild(tdInicio); tr.appendChild(tdFin); tr.appendChild(tdEstado);
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    wrap.appendChild(table);
   }
 
   // ---------------- Ruta crítica preliminar (a partir de lo capturado) ----------------
@@ -1491,7 +1517,7 @@
           acts.push({
             id: act.id, nombre: act.nombre, area: a.name, dur: Math.max(1, Math.round(days)),
             predId: act.predecesor_id || null, fechaDeclarada: act.fecha_compromiso || null,
-            estado: act.estado || "Pendiente"
+            estado: getEstadoAuto(act)
           });
         });
       });
@@ -1636,7 +1662,7 @@
       });
       html += '</div>';
     });
-    if (d.extra) html += '<div class="extra">Adicional: ' + escapeHtml(d.extra) + '</div>';
+    if (d.extra) html += '<div class="extra">Documentos de apoyo: ' + escapeHtml(d.extra) + '</div>';
     html += '</div>';
     return html;
   }
@@ -1668,7 +1694,7 @@
         });
         lines.push("");
       });
-      if (d.extra) { lines.push("Actividad adicional no contemplada: " + d.extra); lines.push(""); }
+      if (d.extra) { lines.push("Documentos de apoyo: " + d.extra); lines.push(""); }
     });
     return lines.join("\n");
   }
