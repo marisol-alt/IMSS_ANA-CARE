@@ -257,7 +257,7 @@
   .gantt-legend .sw-today { background:#c0392b; width:2px; height:14px; border-radius:0; }
 
   .gantt-scroll { overflow-x:auto; background:var(--panel-bg); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); }
-  .gantt-grid { display:grid; grid-template-columns: 34px 240px 62px 62px 56px 56px minmax(480px, 1fr); min-width:1120px; }
+  .gantt-grid { display:grid; grid-template-columns: 28px 1fr 56px 56px 52px 50px minmax(280px, 1.4fr); min-width:0; }
   .gantt-grid .gh { background:var(--navy); color:#fff; font-size:10px; text-transform:uppercase; letter-spacing:0.3px; font-weight:700; padding:8px 8px; position:sticky; top:0; }
   .gantt-grid .gc { padding:8px 8px; border-bottom:1px solid var(--border); font-size:11.8px; display:flex; flex-direction:column; justify-content:center; }
   .gantt-grid .gc.center { align-items:center; text-align:center; }
@@ -267,7 +267,7 @@
   .gantt-grid .crit-tag { display:inline-block; background:var(--danger); color:#fff; font-size:9px; font-weight:700; padding:1px 6px; border-radius:4px; margin-left:5px; letter-spacing:0.2px; vertical-align:middle; }
   .gantt-grid .holgura-star { font-size:9.5px; color:var(--text-soft); display:block; margin-top:1px; }
   .gantt-timeline-header { position:relative; display:flex; overflow:hidden; }
-  .gantt-timeline-header .gtm { flex-shrink:0; font-size:10px; text-align:center; border-left:1px solid rgba(255,255,255,0.2); padding:8px 2px; box-sizing:border-box; }
+  .gantt-timeline-header .gtm { flex-shrink:0; font-size:10px; text-align:center; border-left:1px solid rgba(255,255,255,0.35); padding:8px 2px; box-sizing:border-box; }
   .gantt-timeline { position:relative; height:100%; min-height:36px; }
   .gantt-bar { position:absolute; top:8px; height:14px; border-radius:3px; }
   .gantt-bar.crit { background:var(--danger); }
@@ -546,19 +546,21 @@
   var START_DATE = new Date(2026, 9, 15); // 15 oct 2026 — inicio etapa preoperativa
 
   var AREAS = [
-    { slug: "direccion",      name: "Dirección",                     who: "Manuel, Ariel" },
-    { slug: "implementacion", name: "Implementación y RRHH",         who: "Zueldy" },
-    { slug: "tecnologia",     name: "Tecnología",                    who: "Juan Carlos" },
-    { slug: "clinica",        name: "Gestión Clínica",               who: "David Barros" },
-    { slug: "contenido",      name: "Contenido",                     who: "Nicna" },
-    { slug: "administracion", name: "Administración",                who: "Marisol" },
-    { slug: "legal",          name: "Legal",                         who: "Por asignar" }
+    { slug: "implementacion",     name: "Implementación y RRHH",   who: "Zueldy" },
+    { slug: "tecnologia",         name: "Tecnología",              who: "Juan Carlos" },
+    { slug: "clinica",            name: "Gestión Clínica",         who: "David Barros" },
+    { slug: "contenido",          name: "Contenido",               who: "Nicna" },
+    { slug: "administracion",     name: "Administración",          who: "Marisol" },
+    { slug: "legal",              name: "Legal",                   who: "Por asignar" },
+    { slug: "direccion_manuel",   name: "Dirección — Manuel",      who: "Manuel" },
+    { slug: "direccion_ariel",    name: "Dirección — Ariel",       who: "Ariel" }
   ];
   var EXTERNAL_OPTION = "Externo (IMSS/proveedor)";
   var AREA_NAMES = AREAS.map(function(a){ return a.name; });
 
   var EXAMPLES = {
-    direccion: { resultado: "Ej. Cronograma maestro y gobernanza del proyecto aprobados", actividad: "Ej. Arrancar el comité de seguimiento semanal con IMSS", depende: "aprueben el presupuesto final" },
+    direccion_manuel: { resultado: "Ej. Cronograma maestro y gobernanza del proyecto aprobados", actividad: "Ej. Arrancar el comité de seguimiento semanal con IMSS", depende: "aprueben el presupuesto final" },
+    direccion_ariel: { resultado: "Ej. Cronograma maestro y gobernanza del proyecto aprobados", actividad: "Ej. Arrancar el comité de seguimiento semanal con IMSS", depende: "aprueben el presupuesto final" },
     implementacion: { resultado: "Ej. 10 hospitales CDMX con personal reclutado, contratado, capacitado y certificado", actividad: "Ej. Capacitar y certificar al personal hospitalario en el protocolo post-alta", depende: "validen y entreguen el protocolo clínico documentado" },
     tecnologia: { resultado: "Ej. App con IA integrada, probada y disponible para operación", actividad: "Ej. Integrar el modelo de IA con el historial del paciente", depende: "definan las reglas de riesgo de reingreso" },
     clinica: { resultado: "Ej. Protocolo clínico de seguimiento post-alta para EVC validado", actividad: "Ej. Diseñar los criterios clínicos de alerta para el call center", depende: "tengan la app lista para capturar variables clínicas" },
@@ -1660,6 +1662,22 @@
       cursor = nextMonth;
     }
 
+    // Línea de cuadrícula vertical entre meses (para que se note qué mes abarca cada tramo)
+    var monthGridCss = (function(){
+      var cum = 0, stops = [];
+      months.forEach(function(m){ cum += m.pct; stops.push(cum); });
+      stops.pop(); // el último es el borde derecho, no hace falta línea ahí
+      if (!stops.length) return "none";
+      var parts = ["to right"];
+      stops.forEach(function(p){
+        parts.push("transparent " + p + "%");
+        parts.push("#c7cbd3 " + p + "%");
+        parts.push("#c7cbd3 " + (p + 0.06) + "%");
+        parts.push("transparent " + (p + 0.06) + "%");
+      });
+      return "linear-gradient(" + parts.join(", ") + ")";
+    })();
+
     acts.sort(function(x,y){ return x.ES - y.ES; });
 
     // 6) Construir el grid (encabezado + una fila por actividad)
@@ -1688,7 +1706,7 @@
       if (todayPct >= 0 && todayPct <= 100) {
         timelineInner += '<div class="gantt-today-line" style="left:' + todayPct + '%;"></div>';
       }
-      html += '<div class="gc ' + rowClass + '" style="padding:0;"><div class="gantt-timeline">' + timelineInner + '</div></div>';
+      html += '<div class="gc ' + rowClass + '" style="padding:0;"><div class="gantt-timeline" style="background-image:' + monthGridCss + ';">' + timelineInner + '</div></div>';
     });
 
     gridEl.innerHTML = html;
