@@ -68,10 +68,17 @@
   main { flex:1; padding:18px 22px 44px; min-width:0; }
   .max-w { max-width:1080px; margin:0 auto; }
 
-  .intro { background:var(--panel-bg); border:1px solid var(--border); border-radius:var(--radius); padding:12px 16px; margin-bottom:12px; box-shadow:var(--shadow); }
+  .intro { background:var(--panel-bg); border:1px solid var(--border); border-left:4px solid var(--border); border-radius:var(--radius); padding:12px 16px; margin-bottom:12px; box-shadow:var(--shadow); }
   .intro h2 { margin:0 0 4px; font-size:14.5px; color:var(--navy); }
   .intro p { margin:3px 0; font-size:12.3px; color:var(--text-soft); line-height:1.4; }
   .intro strong { color:var(--text); }
+  .intro.accent-teal { border-left-color:#2f8f83; } .intro.accent-teal h2 { color:#1f6f65; }
+  .intro.accent-blue { border-left-color:#3b6ea5; } .intro.accent-blue h2 { color:#2c5480; }
+  .intro.accent-navy { border-left-color:#1c3452; } .intro.accent-navy h2 { color:#1c3452; }
+  .intro.accent-red { border-left-color:#b5533f; } .intro.accent-red h2 { color:#963f2c; }
+  .intro.accent-amber { border-left-color:#b98a2e; } .intro.accent-amber h2 { color:#8f6a1f; }
+  .intro.accent-gray { border-left-color:#7a8390; } .intro.accent-gray h2 { color:#5a6472; }
+  .intro.accent-purple { border-left-color:#6a4c93; } .intro.accent-purple h2 { color:#553d78; }
 
   .card { background:var(--panel-bg); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); padding:13px 16px; margin-bottom:10px; }
   .card h3 { margin:0 0 2px; font-size:13.5px; color:var(--navy); }
@@ -291,8 +298,10 @@
   .home-stage .st-body { font-size:12px; color:var(--text-soft); line-height:1.5; }
 
   /* Documentación / Reportes / Dashboard */
-  .doc-list { background:var(--panel-bg); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; }
-  .doc-section-title { padding:10px 16px; background:var(--gray); font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.4px; color:var(--navy); border-bottom:1px solid var(--border); }
+  .doc-list { display:flex; flex-direction:column; gap:14px; }
+  .doc-section-card { background:var(--panel-bg); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; }
+  .doc-section-title { padding:11px 16px; background:#8f6a1f; font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.4px; color:#fff; }
+  .doc-section-list { display:flex; flex-direction:column; }
   .doc-row { display:flex; align-items:center; gap:12px; padding:13px 16px; border-bottom:1px solid var(--border); cursor:pointer; }
   .doc-row:last-child { border-bottom:none; }
   .doc-row:hover { background:var(--row-alt); }
@@ -308,7 +317,7 @@
   .kpi-card .kc-sub { font-size:11px; color:var(--text-soft); margin-top:2px; }
   .chart-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(340px,1fr)); gap:14px; }
   .chart-card { background:var(--panel-bg); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); padding:16px 18px; }
-  .chart-card h4 { margin:0 0 10px; font-size:13px; color:var(--navy); }
+  .chart-card h4 { margin:0 0 10px; font-size:13px; color:#553d78; border-left:3px solid #6a4c93; padding-left:8px; }
   .chart-card canvas { max-height:260px; height:260px !important; }
   .conn-banner { background:#fbeae5; border:1px solid #eec3b6; border-radius:var(--radius); padding:11px 14px; margin-bottom:12px; font-size:12.5px; color:#8a3a25; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
   .recovery-actions { margin-top:7px; display:flex; gap:8px; flex-wrap:wrap; }
@@ -354,7 +363,7 @@
   <aside class="sidebar" id="sidebar">
     <div class="brand" id="brandHome" style="cursor:pointer;" title="Ir al inicio">
       <h1>ANA Care</h1>
-      <div class="sub">Sistema de Cuidado Post-Hospitalario</div>
+      <div class="sub">Herramienta interna · Proyecto IMSS</div>
     </div>
     <div class="sidebar-scroll">
       <div class="nav-item" id="navMapa"><span>1.</span><div class="label"><span class="name">Mapa funcional</span></div></div>
@@ -393,7 +402,7 @@
 
       <!-- ===================== FORM VIEW ===================== -->
       <div id="viewForm">
-        <div class="intro">
+        <div class="intro accent-teal">
           <h2>Levantamiento de actividades preoperativas – IMSS / ANA Care</h2>
 
           <p>Para que el proyecto esté <strong>100% listo para el 15 de enero de 2027</strong>, indica <strong>únicamente las actividades indispensables</strong> — no tareas pequeñas ni trabajo del día a día.</p>
@@ -446,7 +455,7 @@
 
       <!-- ===================== MAPA FUNCIONAL (organigrama, referencia) ===================== -->
       <div id="viewMapa" style="display:none;">
-        <div class="intro">
+        <div class="intro accent-blue">
           <h2>Mapa funcional del proyecto</h2>
           <p>Organigrama de las áreas del proyecto: quién la lidera y su alcance para el arranque. Solo consulta — se actualiza desde el Panel de control principal.</p>
         </div>
@@ -456,7 +465,7 @@
 
       <!-- ===================== ACTIVIDADES: resumen (lista) ===================== -->
       <div id="viewActividadesOverview" style="display:none;">
-        <div class="intro">
+        <div class="intro accent-navy">
           <h2>Actividades</h2>
           <p>Seguimiento de avance de las actividades que cada área capturó. Elige un área en el menú o en la lista para ver el detalle y registrar sus fechas reales de inicio y término.</p>
         </div>
@@ -469,7 +478,7 @@
 
       <!-- ===================== ACTIVIDADES: por área (lista, con estado) ===================== -->
       <div id="viewActividadesArea" style="display:none;">
-        <div class="intro">
+        <div class="intro accent-navy">
           <h2 id="actAreaTitle">Actividades</h2>
           <p>Registra la fecha real de inicio y de término de cada actividad. El estado y el % de avance se calculan solos: sin fecha de inicio = Pendiente, con inicio y sin fin = En curso, con fecha de fin = Terminado.</p>
         </div>
@@ -479,7 +488,7 @@
 
       <!-- ===================== RUTA CRÍTICA (Gantt dinámico, a partir de lo capturado) ===================== -->
       <div id="viewRuta" style="display:none;">
-        <div class="intro">
+        <div class="intro accent-red">
           <h2>Ruta crítica</h2>
           <p>Calculada (método CPM) con lo que ya está capturado: fechas compromiso, tiempos y el orden que cada área declaró entre sus propias actividades. La <strong>barra roja</strong> es la ruta crítica de cada cadena (holgura 0) — si se atrasa, se atrasa el cierre. La <strong>barra azul</strong> tiene margen (holgura), mostrado rayado. Esta vista se recalcula sola cada vez que alguien mueve una fecha o un tiempo y guarda — es nuestra matriz para controlar que no nos atrasemos. Nota: por ahora solo conecta actividades <em>dentro de la misma área</em> (vía "actividad tuya previa"); las dependencias entre áreas todavía las cruzo yo a mano conforme más áreas respondan, así que la ruta se irá afinando y conectando más.</p>
         </div>
@@ -497,7 +506,7 @@
 
       <!-- ===================== DOCUMENTACIÓN ===================== -->
       <div id="viewDocs" style="display:none;">
-        <div class="intro">
+        <div class="intro accent-amber">
           <h2>Documentación</h2>
           <p>Documentos de referencia del proyecto. Se abren para consulta desde donde viven guardados — no se copian ni se descargan a esta herramienta.</p>
         </div>
@@ -506,7 +515,7 @@
 
       <!-- ===================== REPORTES ===================== -->
       <div id="viewReportes" style="display:none;">
-        <div class="intro">
+        <div class="intro accent-gray">
           <h2>Reportes</h2>
         </div>
         <div id="reporteBody"></div>
@@ -514,7 +523,7 @@
 
       <!-- ===================== DASHBOARD ===================== -->
       <div id="viewDashboard" style="display:none;">
-        <div class="intro">
+        <div class="intro accent-purple">
           <h2>Dashboard</h2>
           <p>Vista general del avance del proyecto: captura, ejecución y ruta crítica.</p>
         </div>
@@ -645,7 +654,6 @@
       '<div class="home-hero">' +
         '<div class="hh-kicker">ANA CARE</div>' +
         '<h1>Sistema de Cuidado Post-Hospitalario</h1>' +
-        '<div class="hh-sub">Herramienta interna de coordinación del proyecto</div>' +
       '</div>' +
 
       '<div class="home-section"><h3><span class="hs-num">1</span>Identificación del proyecto</h3><div class="hs-body">' +
@@ -705,9 +713,6 @@
 
   // ---------------- Documentación ----------------
   var DOCUMENTOS_SECCIONES = [
-    { titulo:"Guía de referencia", items:[
-      { name:"Guía para Documentación — Due Diligence (BID/IMSS)", desc:"Paz Mental / ANA Care, julio 2026 — documento base del que se extrajo la lista de abajo", url:"" }
-    ]},
     { titulo:"1. Documentación Constitutiva y Legal", items:[
       { name:"Acta Constitutiva (Copia Certificada)", desc:"", url:"" },
       { name:"Testimonio Notarial Vigente", desc:"", url:"" },
@@ -767,16 +772,20 @@
     var wrap = document.getElementById("docList");
     wrap.innerHTML = "";
     DOCUMENTOS_SECCIONES.forEach(function(sec){
+      var card = document.createElement("div"); card.className = "doc-section-card";
       var head = document.createElement("div"); head.className = "doc-section-title"; head.textContent = sec.titulo;
-      wrap.appendChild(head);
+      card.appendChild(head);
+      var list = document.createElement("div"); list.className = "doc-section-list";
       sec.items.forEach(function(d){
         var row = document.createElement("div"); row.className = "doc-row";
         row.innerHTML = '<span class="dr-icon">📄</span>' +
           '<div><div class="dr-name">' + escapeHtml(d.name) + '</div>' + (d.desc ? '<div class="dr-desc">' + escapeHtml(d.desc) + '</div>' : '') + '</div>' +
           '<span class="dr-open">' + (d.url ? "Abrir ↗" : "Enlace pendiente") + '</span>';
         if (d.url) row.addEventListener("click", function(){ window.open(d.url, "_blank", "noopener"); });
-        wrap.appendChild(row);
+        list.appendChild(row);
       });
+      card.appendChild(list);
+      wrap.appendChild(card);
     });
   }
 
