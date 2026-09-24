@@ -1,0 +1,1448 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Levantamiento de Actividades Preoperativas — IMSS / ANA Care</title>
+<style>
+  :root {
+    --navy: #1c3452;
+    --navy-2: #24405f;
+    --bg: #f4f5f7;
+    --panel-bg: #ffffff;
+    --teal: #2f8f83;
+    --teal-dark: #1f6f65;
+    --teal-light: #e4f2ef;
+    --res-bg: #f7eefb;
+    --res-border: #ddbfec;
+    --res-accent: #8a4bb0;
+    --res-accent-dark: #6a3689;
+    --act-bg: #eef1f7;
+    --act-border: #c4cee0;
+    --row-alt: #f6f8fb;
+    --text: #232b36;
+    --text-soft: #626d7a;
+    --border: #dfe2e8;
+    --shadow: 0 1px 3px rgba(20,30,45,0.07), 0 1px 2px rgba(20,30,45,0.05);
+    --radius: 9px;
+    --danger: #b5533f;
+    --ok: #2f8f4e;
+    --pending: #b98a2e;
+    color-scheme: light;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin:0; padding:0; background:var(--bg); color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; -webkit-font-smoothing:antialiased; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  body { min-height:100%; font-size:13.5px; }
+
+  .app { display:flex; min-height:100vh; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px); }
+
+  .sidebar { width:230px; flex-shrink:0; background:var(--navy); color:#e7ecf3; padding:16px 12px 12px;
+    position:sticky; top:env(safe-area-inset-top,0px); height:100vh; display:flex; flex-direction:column; }
+  .sidebar .brand { padding:0 6px 12px; }
+  .sidebar .brand h1 { font-size:14px; margin:0 0 3px; font-weight:700; color:#fff; }
+  .sidebar .brand .sub { font-size:11px; color:#a9b8cc; line-height:1.35; }
+  .sidebar-scroll { flex:1; min-height:0; overflow-y:auto; }
+  .nav-section-label { font-size:10px; text-transform:uppercase; letter-spacing:0.5px; color:#8ea1ba; padding:10px 8px 4px; font-weight:700; }
+  .nav-item { display:flex; align-items:center; gap:8px; padding:8px 9px; border-radius:7px; cursor:pointer; font-size:12.8px; color:#dbe4f0; margin-bottom:1px; }
+  .nav-item:hover { background:var(--navy-2); }
+  .nav-item.active { background:var(--teal); color:#fff; }
+  .nav-item .dot { width:6px; height:6px; border-radius:50%; background:#56698a; flex-shrink:0; }
+  .nav-item .dot.done { background:#63d692; }
+  .nav-item .dot.draft { background:#f0c265; }
+  .nav-item.active .dot { background:#fff; }
+  .nav-item .label { display:flex; flex-direction:column; line-height:1.2; overflow:hidden; }
+  .nav-item .label .name { font-weight:600; white-space:nowrap; text-overflow:ellipsis; overflow:hidden; }
+  .nav-item .label .who { font-size:10.3px; color:#a9b8cc; white-space:nowrap; text-overflow:ellipsis; overflow:hidden; }
+  .nav-item.active .label .who { color:#eafff9; }
+  .nav-item.panel-link { border:1px solid #3a5578; margin-top:10px; flex-shrink:0; }
+  .nav-parent { display:flex; align-items:center; gap:7px; padding:8px 9px; border-radius:7px; cursor:pointer; font-size:12.8px; color:#dbe4f0; margin-bottom:1px; }
+  .nav-parent:hover { background:var(--navy-2); }
+  .nav-parent .caret { font-size:10px; color:#8ea1ba; transition:transform .15s; width:10px; flex-shrink:0; }
+  .nav-parent.expanded .caret { transform:rotate(90deg); }
+  .nav-subgroup { max-height:0; overflow:hidden; transition:max-height .18s ease; padding-left:6px; }
+  .nav-subgroup.expanded { max-height:600px; }
+  .nav-subgroup .nav-item { padding-left:24px; }
+
+  main { flex:1; padding:18px 22px 44px; min-width:0; }
+  .max-w { max-width:1080px; margin:0 auto; }
+
+  .intro { background:var(--panel-bg); border:1px solid var(--border); border-radius:var(--radius); padding:12px 16px; margin-bottom:12px; box-shadow:var(--shadow); }
+  .intro h2 { margin:0 0 4px; font-size:14.5px; color:var(--navy); }
+  .intro p { margin:3px 0; font-size:12.3px; color:var(--text-soft); line-height:1.4; }
+  .intro strong { color:var(--text); }
+
+  .card { background:var(--panel-bg); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); padding:13px 16px; margin-bottom:10px; }
+  .card h3 { margin:0 0 2px; font-size:13.5px; color:var(--navy); }
+  .card .hint { font-size:11.6px; color:var(--text-soft); margin:0 0 9px; line-height:1.42; }
+
+  label { display:block; font-size:11px; font-weight:700; color:var(--teal-dark); margin-bottom:2px; }
+  label .req-star { color:var(--danger); }
+  input[type=text], input[type=date], input[type=number], input[type=password], textarea, select {
+    width:100%; font-family:inherit; font-size:12.5px; padding:6px 8px; border-radius:6px;
+    border:1px solid var(--border); background:#fff; color:var(--text);
+  }
+  select { cursor:pointer; }
+  textarea { resize:vertical; min-height:30px; font-family:inherit; }
+  input:focus, textarea:focus, select:focus { outline:none; border-color:var(--teal); box-shadow:0 0 0 2px rgba(47,143,131,0.16); }
+  .field { margin-bottom:7px; }
+  .row2 { display:grid; grid-template-columns:1fr 1fr; gap:7px; }
+
+  .resultado-block { border:1px solid var(--res-border); border-left:4px solid var(--res-accent); border-radius:8px; padding:10px 12px 12px; margin-bottom:13px; background:var(--res-bg); }
+  .resultado-block .rhead { display:flex; align-items:center; justify-content:space-between; margin-bottom:5px; }
+  .rhead .rnum { font-size:11px; font-weight:700; color:var(--res-accent-dark); text-transform:uppercase; letter-spacing:0.3px; }
+  .resultado-block label { color:var(--res-accent-dark); }
+
+  .activities-wrap { background:var(--act-bg); border:1px solid var(--act-border); border-left:4px solid var(--navy); border-radius:8px; padding:9px 10px 10px; margin-top:6px; }
+  .activities-wrap .awrap-label { font-size:10.3px; text-transform:uppercase; letter-spacing:0.4px; font-weight:700; color:var(--navy); margin:0 0 6px 2px; }
+  .table-scroll { overflow-x:auto; }
+  table.activity-table { width:100%; border-collapse:separate; border-spacing:0 10px; min-width:1060px; }
+  table.activity-table th { text-align:left; font-size:10px; text-transform:uppercase; letter-spacing:0.3px; color:var(--navy); font-weight:700; padding:0 6px 1px; vertical-align:bottom; }
+  table.activity-table th .th-sub { display:block; font-size:9.3px; text-transform:none; letter-spacing:0; font-weight:500; color:var(--text-soft); margin-top:1px; }
+  table.activity-table td { background:#fff; padding:7px 7px; vertical-align:top; border-top:1px solid var(--border); border-bottom:1px solid var(--border); }
+  table.activity-table tbody tr:nth-child(even) td { background:var(--row-alt); }
+  table.activity-table td:first-child { border-left:1px solid var(--border); border-top-left-radius:6px; border-bottom-left-radius:6px; }
+  table.activity-table td:last-child { border-right:1px solid var(--border); border-top-right-radius:6px; border-bottom-right-radius:6px; }
+  table.activity-table col.c-num { width:32px; }
+  table.activity-table col.c-act { width:180px; }
+  table.activity-table col.c-dep { width:300px; }
+  table.activity-table col.c-time { width:100px; }
+  table.activity-table col.c-date { width:200px; }
+  table.activity-table col.c-com { width:170px; }
+  table.activity-table col.c-del { width:30px; }
+  td.num-cell { text-align:center; vertical-align:middle !important; }
+  .act-badge { display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; border-radius:50%;
+    background:var(--navy); color:#fff; font-size:11px; font-weight:700; }
+  td textarea.act-input { min-height:52px; font-size:12.3px; }
+
+  .dep-pair { border:1px solid var(--border); border-radius:6px; padding:5px 6px; margin-bottom:5px; background:#fbfbfd; }
+  .dep-pair .dep-pair-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:3px; }
+  .dep-pair .dep-area-name { font-size:10.6px; font-weight:700; color:var(--teal-dark); background:var(--teal-light); padding:1px 7px; border-radius:999px; }
+  .dep-pair .chip-x { border:none; background:none; color:var(--danger); font-weight:700; cursor:pointer; padding:0 2px; font-size:12px; line-height:1; }
+  textarea.dep-detail { min-height:32px; font-size:11.6px; }
+  .dep-empty-note { font-size:10.6px; color:var(--text-soft); font-style:italic; margin-bottom:5px; }
+  select.add-area-select { font-size:10.8px; padding:5px 6px; color:var(--text-soft); }
+  .dep-sublabel { font-size:9.6px; text-transform:uppercase; letter-spacing:0.3px; font-weight:700; color:var(--navy); margin:6px 0 3px; }
+  .dep-sublabel:first-child { margin-top:0; }
+  select.own-pred-select { margin-bottom:2px; }
+
+  .date-hint { font-size:10px; color:var(--text-soft); margin-top:4px; line-height:1.35; }
+  .date-hint.warn { color:var(--pending); }
+  .date-hint button.use-sug { border:none; background:none; color:var(--teal-dark); font-weight:700; cursor:pointer; padding:0; font-size:10px; text-decoration:underline; display:block; margin-top:2px; }
+  td textarea.com-input { min-height:52px; font-size:11.8px; }
+  .del-x { border:none; background:none; color:var(--danger); font-size:16px; font-weight:700; cursor:pointer; padding:2px 4px; line-height:1; }
+  .del-x:hover { color:#7f382a; }
+  .del-x[disabled] { visibility:hidden; }
+
+  button { font-family:inherit; cursor:pointer; }
+  .btn { border:1px solid var(--border); background:#fff; padding:7px 11px; border-radius:6px; font-size:11.8px; font-weight:600; color:var(--text); }
+  .btn:hover { border-color:var(--teal); }
+  .btn.small { padding:4px 9px; font-size:10.8px; }
+  .btn.danger { color:var(--danger); border-color:#e3c9c1; }
+  .btn.danger:hover { border-color:var(--danger); }
+  .btn.teal { background:var(--teal); border-color:var(--teal); color:#fff; }
+  .btn.teal:hover { background:var(--teal-dark); border-color:var(--teal-dark); }
+  .btn:disabled { opacity:0.5; cursor:default; }
+
+  .btn-add-activity { display:flex; align-items:center; justify-content:center; gap:6px; width:100%; padding:7px; border-radius:7px;
+    border:1.5px dashed var(--navy); background:#e3e8f2; color:var(--navy); font-size:11.8px; font-weight:700; margin-top:2px; }
+  .btn-add-activity:hover { background:#d5dced; }
+  .btn-add-resultado { display:flex; align-items:center; justify-content:center; gap:6px; width:100%; padding:10px; border-radius:8px;
+    border:none; background:var(--res-accent); color:#fff; font-size:12.5px; font-weight:700; margin-top:2px; }
+  .btn-add-resultado:hover { background:var(--res-accent-dark); }
+
+  .actions-bar { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-top:12px; }
+  .save-status { font-size:11.3px; color:var(--text-soft); }
+  .save-status.ok { color:var(--ok); }
+  .save-status.err { color:var(--danger); font-weight:600; }
+
+  .howitworks { background:var(--teal-light); border:1px solid #bfe3db; border-radius:var(--radius); padding:12px 16px; margin-bottom:14px; font-size:11.8px; color:#1f4f47; line-height:1.5; }
+  .howitworks strong { color:var(--teal-dark); }
+  .howitworks ol { margin:5px 0 0 16px; padding:0; }
+
+  .summary-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:10px; margin-bottom:16px; }
+  .progress-wrap { background:var(--panel-bg); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); padding:12px 16px; margin-bottom:14px; }
+  .progress-wrap .p-top { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:6px; }
+  .progress-wrap .p-label { font-size:12.5px; font-weight:700; color:var(--navy); }
+  .progress-wrap .p-pct { font-size:12.5px; font-weight:700; color:var(--teal-dark); }
+  .progress-bar-track { height:8px; border-radius:999px; background:#e7e9ee; overflow:hidden; }
+  .progress-bar-fill { height:100%; background:var(--teal); border-radius:999px; transition:width .3s; }
+  .quick-list { margin:6px 0 0; padding-left:18px; font-size:11.3px; color:var(--text); line-height:1.5; }
+  .quick-list li { margin-bottom:1px; }
+  .summary-card { background:var(--panel-bg); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); padding:12px 14px; }
+  .summary-card h4 { margin:0 0 3px; font-size:13px; color:var(--navy); display:flex; align-items:center; gap:6px; }
+  .summary-card .who { font-size:10.8px; color:var(--text-soft); margin:0 0 6px; }
+  .badge { display:inline-block; font-size:9.8px; font-weight:700; padding:2px 7px; border-radius:999px; text-transform:uppercase; letter-spacing:0.3px; }
+  .badge.done { background:#e2f3e6; color:var(--ok); }
+  .badge.draft { background:#fbeed6; color:var(--pending); }
+  .badge.empty { background:#ececee; color:var(--text-soft); }
+  .summary-card .meta { font-size:10.8px; color:var(--text-soft); margin-top:5px; }
+  .detail-box { margin-top:8px; border-top:1px solid var(--border); padding-top:8px; font-size:11.6px; line-height:1.45; }
+  .detail-box .res { margin-bottom:8px; }
+  .detail-box .res-title { font-weight:700; color:var(--res-accent-dark); margin-bottom:2px; }
+  .detail-box .act { margin:2px 0 2px 10px; color:var(--text); }
+  .detail-box .act .k { color:var(--text-soft); }
+  .detail-box .comment { margin:1px 0 3px 10px; color:var(--text-soft); font-style:italic; }
+  .detail-box .extra { margin-top:6px; font-style:italic; color:var(--text-soft); }
+  .top-actions { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
+
+  footer.note { text-align:center; font-size:10.8px; color:var(--text-soft); margin-top:20px; }
+
+  /* Mapa funcional: organigrama */
+  .orgchart { display:flex; flex-direction:column; align-items:center; margin-bottom:14px; }
+  .org-root { background:var(--navy); color:#fff; font-weight:700; font-size:13.5px; padding:12px 26px; border-radius:9px; text-align:center; }
+  .org-connector { width:1px; height:22px; background:var(--border); }
+  .org-direccion { background:var(--teal-light); border:1.5px solid var(--teal); border-radius:9px; padding:12px 26px; text-align:center; min-width:220px; }
+  .org-direccion .od-title { font-size:12px; font-weight:700; color:var(--teal-dark); letter-spacing:0.3px; text-transform:uppercase; }
+  .org-direccion .od-who { font-size:14px; font-weight:700; color:var(--text); margin-top:2px; }
+  .org-hline { width:100%; max-width:900px; height:1px; background:var(--border); margin:0; position:relative; }
+  .org-children { display:flex; flex-wrap:nowrap; justify-content:center; gap:12px; margin-top:22px; width:100%; overflow-x:auto; padding-bottom:6px; }
+  .frente-card { background:var(--panel-bg); border:1px solid var(--border); border-top:3px solid var(--teal); border-radius:var(--radius); box-shadow:var(--shadow); padding:12px 12px; width:150px; flex-shrink:0; text-align:center; position:relative; }
+  .frente-card::before { content:""; position:absolute; top:-22px; left:50%; width:1px; height:22px; background:var(--border); }
+  .frente-card .fc-name { font-size:13px; font-weight:700; color:var(--navy); margin-bottom:2px; }
+  .frente-card .fc-resp { font-size:11.3px; color:var(--text-soft); margin-bottom:8px; }
+  .frente-card .fc-resp.pending { color:var(--pending); font-style:italic; }
+  .frente-detail-card { background:var(--panel-bg); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); padding:16px 18px; margin-top:4px; max-width:600px; margin-left:auto; margin-right:auto; }
+  .frente-detail-card h3 { margin:0 0 10px; font-size:14.5px; color:var(--navy); text-align:left; }
+  .fd-row { margin-bottom:10px; font-size:12.5px; text-align:left; }
+  .fd-row .fd-label { font-weight:700; color:var(--teal-dark); font-size:11px; text-transform:uppercase; letter-spacing:0.3px; margin-bottom:2px; }
+  .fd-row .fd-val { color:var(--text); line-height:1.5; }
+
+  /* Actividades: overview list + area list */
+  .act-overview-list, .act-list { background:var(--panel-bg); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; }
+  .act-overview-row { display:flex; align-items:center; gap:12px; padding:12px 16px; border-bottom:1px solid var(--border); cursor:pointer; }
+  .act-overview-row:last-child { border-bottom:none; }
+  .act-overview-row:hover { background:var(--row-alt); }
+  .act-overview-row .aor-name { font-weight:700; font-size:13px; color:var(--navy); width:170px; flex-shrink:0; }
+  .act-overview-row .aor-who { font-size:11px; color:var(--text-soft); width:110px; flex-shrink:0; }
+  .act-overview-row .aor-bar { flex:1; }
+  .act-overview-row .aor-pct { width:44px; text-align:right; font-size:12px; font-weight:700; color:var(--teal-dark); flex-shrink:0; }
+  .act-row { display:flex; align-items:center; gap:10px; padding:11px 16px; border-bottom:1px solid var(--border); }
+  .act-row:last-child { border-bottom:none; }
+  .act-row .ar-num { width:22px; height:22px; border-radius:50%; background:var(--navy); color:#fff; font-size:10.5px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .act-row .ar-body { flex:1; min-width:0; }
+  .act-row .ar-name { font-size:12.8px; color:var(--text); }
+  .act-row .ar-meta { font-size:10.6px; color:var(--text-soft); margin-top:2px; }
+  .act-row select.ar-estado { width:130px; flex-shrink:0; font-size:11.5px; }
+  .act-row select.ar-estado.pendiente { color:var(--text-soft); }
+  .act-row select.ar-estado.en-curso { color:var(--pending); }
+  .act-row select.ar-estado.completado { color:var(--ok); }
+  .act-empty { padding:20px 16px; font-size:12.5px; color:var(--text-soft); font-style:italic; }
+
+  /* Ruta crítica preliminar */
+  .ruta-banner { background:var(--teal-light); border:1px solid #bfe3db; border-radius:var(--radius); padding:12px 16px; margin-bottom:12px; font-size:12.5px; color:#1f4f47; }
+  .gantt-legend { display:flex; flex-wrap:wrap; gap:16px; font-size:11.5px; color:var(--text-soft); margin-bottom:10px; align-items:center; }
+  .gantt-legend .sw { display:inline-block; width:14px; height:10px; border-radius:2px; margin-right:5px; vertical-align:middle; }
+  .gantt-legend .sw-crit { background:var(--danger); }
+  .gantt-legend .sw-noncrit { background:var(--navy-2); }
+  .gantt-legend .sw-float { background:repeating-linear-gradient(45deg, var(--border) 0 3px, transparent 3px 6px); border:1px solid var(--border); }
+  .gantt-legend .sw-today { background:#c0392b; width:2px; height:14px; border-radius:0; }
+
+  .gantt-scroll { overflow-x:auto; background:var(--panel-bg); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); }
+  .gantt-grid { display:grid; grid-template-columns: 34px 240px 62px 62px 56px 56px minmax(480px, 1fr); min-width:1120px; }
+  .gantt-grid .gh { background:var(--navy); color:#fff; font-size:10px; text-transform:uppercase; letter-spacing:0.3px; font-weight:700; padding:8px 8px; position:sticky; top:0; }
+  .gantt-grid .gc { padding:8px 8px; border-bottom:1px solid var(--border); font-size:11.8px; display:flex; flex-direction:column; justify-content:center; }
+  .gantt-grid .gc.center { align-items:center; text-align:center; }
+  .gantt-grid .row-crit .gc { background:#fbeae5; }
+  .gantt-grid .gc .g-name { font-weight:600; color:var(--text); line-height:1.35; }
+  .gantt-grid .gc .g-area { font-size:10.3px; color:var(--text-soft); margin-top:2px; }
+  .gantt-grid .crit-tag { display:inline-block; background:var(--danger); color:#fff; font-size:9px; font-weight:700; padding:1px 6px; border-radius:4px; margin-left:5px; letter-spacing:0.2px; vertical-align:middle; }
+  .gantt-grid .holgura-star { font-size:9.5px; color:var(--text-soft); display:block; margin-top:1px; }
+  .gantt-timeline-header { position:relative; display:flex; overflow:hidden; }
+  .gantt-timeline-header .gtm { flex-shrink:0; font-size:10px; text-align:center; border-left:1px solid rgba(255,255,255,0.2); padding:8px 2px; box-sizing:border-box; }
+  .gantt-timeline { position:relative; height:100%; min-height:36px; }
+  .gantt-bar { position:absolute; top:8px; height:14px; border-radius:3px; }
+  .gantt-bar.crit { background:var(--danger); }
+  .gantt-bar.noncrit { background:var(--navy-2); }
+  .gantt-float-bar { position:absolute; top:8px; height:14px; border-radius:3px; background:repeating-linear-gradient(45deg, var(--border) 0 3px, transparent 3px 6px); opacity:.7; }
+  .gantt-today-line { position:absolute; top:0; bottom:0; width:2px; background:#c0392b; z-index:2; }
+  .gantt-today-tag { position:absolute; top:-2px; font-size:9px; font-weight:700; color:#c0392b; background:#fff; padding:0 3px; transform:translateX(-50%); white-space:nowrap; }
+
+  .recovery-banner { background:#fff6e9; border:1px solid #f0d9ad; border-radius:var(--radius); padding:11px 14px; margin-bottom:12px; font-size:12px; color:#7a5a1e; }
+  .conn-banner { background:#fbeae5; border:1px solid #eec3b6; border-radius:var(--radius); padding:11px 14px; margin-bottom:12px; font-size:12.5px; color:#8a3a25; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+  .recovery-actions { margin-top:7px; display:flex; gap:8px; flex-wrap:wrap; }
+
+  @media (max-width:760px) {
+    .app { flex-direction:column; }
+    .sidebar { width:100%; height:auto; position:sticky; top:0; flex-direction:row; flex-wrap:nowrap; overflow-x:auto; align-items:center; padding:8px 8px; gap:5px; }
+    .sidebar .brand { display:none; }
+    .sidebar-scroll { flex:none; display:flex; overflow-y:visible; gap:5px; }
+    .nav-section-label { display:none; }
+    .nav-item { flex-shrink:0; margin-bottom:0; }
+    .nav-item.panel-link { margin-top:0; }
+    main { padding:14px 12px 40px; }
+  }
+
+  ::-webkit-scrollbar { width:9px; height:9px; }
+  ::-webkit-scrollbar-thumb { background:var(--border); border-radius:9px; }
+</style>
+<!-- ============================================================
+     CONFIGURACIÓN DE FIREBASE — PEGA AQUÍ TU firebaseConfig
+     (lo obtienes en Firebase Console → tu proyecto → ícono "</>" web)
+     ============================================================ -->
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
+<script>
+  // === PEGA AQUÍ TU CONFIGURACIÓN DE FIREBASE (reemplaza este objeto) ===
+  var FIREBASE_CONFIG = {
+    apiKey: "AIzaSyC_0CBvSwBmac76aVjMQ8Oo0k0lrTdiFa4",
+    authDomain: "proyecto-prueba-bd2a3.firebaseapp.com",
+    projectId: "proyecto-prueba-bd2a3",
+    storageBucket: "proyecto-prueba-bd2a3.firebasestorage.app",
+    messagingSenderId: "966728413657",
+    appId: "1:966728413657:web:745adb586638867f7d69c8"
+  };
+  // === NO EDITES NADA DEBAJO DE ESTA LÍNEA ===
+</script>
+</head>
+<body>
+
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <h1>Levantamiento preoperativo</h1>
+      <div class="sub">Proyecto IMSS · ANA Care<br>Arranque: 15 enero 2027</div>
+    </div>
+    <div class="sidebar-scroll">
+      <div class="nav-item" id="navMapa"><span>🗺️</span><div class="label"><span class="name">Mapa funcional</span></div></div>
+
+      <div class="nav-parent" id="navLevantamiento">
+        <span class="caret">▸</span>
+        <div class="label"><span class="name">Levantamiento de información</span></div>
+      </div>
+      <div class="nav-subgroup" id="subgroupLevantamiento"></div>
+
+      <div class="nav-parent" id="navActividades">
+        <span class="caret">▸</span>
+        <div class="label"><span class="name">Actividades</span></div>
+      </div>
+      <div class="nav-subgroup" id="subgroupActividades"></div>
+
+      <div class="nav-item" id="navRuta"><span>🛤️</span><div class="label"><span class="name">Ruta crítica</span></div></div>
+    </div>
+  </aside>
+
+  <main>
+    <div class="max-w">
+      <div id="connBanner" class="conn-banner" style="display:none;">
+        <span id="connBannerText">⚠ Sin conexión con la base de datos compartida. Lo que veas aquí puede estar incompleto y lo que escribas <strong>no se va a guardar</strong>.</span>
+        <button type="button" class="btn small" id="connRetryBtn">Reintentar conexión</button>
+      </div>
+
+      <!-- ===================== FORM VIEW ===================== -->
+      <div id="viewForm">
+        <div class="intro">
+          <h2>Levantamiento de actividades preoperativas – IMSS / ANA Care</h2>
+          <p>Para que el proyecto esté <strong>100% listo para el 15 de enero de 2027</strong>, indica <strong>únicamente las actividades indispensables</strong> — no tareas pequeñas ni trabajo del día a día.</p>
+        </div>
+
+        <div id="recoveryBanner" class="recovery-banner" style="display:none;">
+          <span id="recoveryText"></span>
+          <div class="recovery-actions">
+            <button type="button" class="btn small" id="recoveryDiscard">Descartar</button>
+            <button type="button" class="btn small teal" id="recoveryRestore">Recuperar y reintentar guardar</button>
+          </div>
+        </div>
+
+        <form id="respForm" novalidate>
+
+          <div class="card">
+            <div class="row2">
+              <div class="field">
+                <label>Área</label>
+                <input type="text" id="areaLabelDisplay" disabled style="font-weight:700; color:var(--navy); background:#fff;">
+                <div id="lastSavedNote" style="font-size:10.6px; color:var(--text-soft); margin-top:3px;"></div>
+              </div>
+              <div class="field">
+                <label>Nombre de quien responde <span class="req-star">*</span></label>
+                <input type="text" id="contacto" required placeholder="Ej. Zueldy Ramírez">
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>1–2. Resultados y actividades principales</h3>
+            <p class="hint"><strong>1.</strong> Resultados concretos que tu área debe dejar terminados antes del 15 de enero (bloque morado). <strong>2.</strong> Para cada uno, sus actividades principales (tabla azul). Idealmente entre 3 y 7 resultados — si dejas alguno de los que se ven abajo sin llenar, se descarta solo al guardar, no hace falta borrarlo a mano.</p>
+            <div id="resultadosList"></div>
+            <button type="button" class="btn-add-resultado" id="addResultado">＋ Agregar otro resultado</button>
+          </div>
+
+          <div class="card">
+            <h3>6. ¿Falta algo?</h3>
+            <p class="hint"><strong>6.</strong> ¿Alguna actividad indispensable para el arranque que no esté contemplada arriba?</p>
+            <textarea id="extra" placeholder="Escribe aquí si hace falta algo (opcional)..."></textarea>
+          </div>
+
+          <div class="actions-bar">
+            <span class="save-status" id="saveStatus"></span>
+            <button type="button" class="btn teal" id="saveBtn">Guardar respuestas</button>
+          </div>
+
+        </form>
+      </div>
+
+      <!-- ===================== MAPA FUNCIONAL (organigrama, referencia) ===================== -->
+      <div id="viewMapa" style="display:none;">
+        <div class="intro">
+          <h2>Mapa funcional del proyecto</h2>
+          <p>Organigrama de las áreas del proyecto: quién la lidera y su alcance para el arranque. Solo consulta — se actualiza desde el Panel de control principal.</p>
+        </div>
+        <div class="orgchart" id="orgChart"></div>
+        <div id="frenteDetail"></div>
+      </div>
+
+      <!-- ===================== ACTIVIDADES: resumen (lista) ===================== -->
+      <div id="viewActividadesOverview" style="display:none;">
+        <div class="intro">
+          <h2>Actividades</h2>
+          <p>Seguimiento de avance de las actividades que cada área capturó en el levantamiento. Elige un área en el menú o en la lista para marcar el estado de cada actividad.</p>
+        </div>
+        <div class="top-actions">
+          <button class="btn teal" id="exportOverviewBtn">Exportar todo (para ruta crítica)</button>
+        </div>
+        <div class="progress-wrap" id="progressWrap"></div>
+        <div class="act-overview-list" id="actOverviewList"></div>
+      </div>
+
+      <!-- ===================== ACTIVIDADES: por área (lista, con estado) ===================== -->
+      <div id="viewActividadesArea" style="display:none;">
+        <div class="intro">
+          <h2 id="actAreaTitle">Actividades</h2>
+          <p>Marca el estado real de cada actividad. El % de avance se calcula solo (Pendiente = 0%, En curso = 50%, Completado = 100%).</p>
+        </div>
+        <div class="progress-wrap" id="actAreaProgressWrap"></div>
+        <div class="act-list" id="actAreaList"></div>
+      </div>
+
+      <!-- ===================== RUTA CRÍTICA (Gantt dinámico, a partir de lo capturado) ===================== -->
+      <div id="viewRuta" style="display:none;">
+        <div class="intro">
+          <h2>Ruta crítica</h2>
+          <p>Calculada (método CPM) con lo que ya está capturado: fechas compromiso, tiempos y el orden que cada área declaró entre sus propias actividades. La <strong>barra roja</strong> es la ruta crítica de cada cadena (holgura 0) — si se atrasa, se atrasa el cierre. La <strong>barra azul</strong> tiene margen (holgura), mostrado rayado. Esta vista se recalcula sola cada vez que alguien mueve una fecha o un tiempo y guarda — es nuestra matriz para controlar que no nos atrasemos. Nota: por ahora solo conecta actividades <em>dentro de la misma área</em> (vía "actividad tuya previa"); las dependencias entre áreas todavía las cruzo yo a mano conforme más áreas respondan, así que la ruta se irá afinando y conectando más.</p>
+        </div>
+        <div class="ruta-banner" id="rutaBanner"></div>
+        <div class="gantt-legend">
+          <span><span class="sw sw-crit"></span> Ruta crítica (holgura 0)</span>
+          <span><span class="sw sw-noncrit"></span> Con holgura</span>
+          <span><span class="sw sw-float"></span> Margen disponible</span>
+          <span><span class="sw sw-today"></span> Hoy</span>
+        </div>
+        <div class="gantt-scroll">
+          <div class="gantt-grid" id="ganttGrid"></div>
+        </div>
+      </div>
+
+      <footer class="note">Herramienta interna de coordinación · Proyecto IMSS / ANA Care</footer>
+    </div>
+  </main>
+</div>
+
+<script>
+(function(){
+
+  var START_DATE = new Date(2026, 9, 15); // 15 oct 2026 — inicio etapa preoperativa
+
+  var AREAS = [
+    { slug: "direccion",      name: "Dirección",                     who: "Manuel, Ariel" },
+    { slug: "implementacion", name: "Implementación y RRHH",         who: "Zueldy" },
+    { slug: "tecnologia",     name: "Tecnología",                    who: "Juan Carlos" },
+    { slug: "clinica",        name: "Gestión Clínica",               who: "David Barros" },
+    { slug: "contenido",      name: "Contenido",                     who: "Nicna" },
+    { slug: "administracion", name: "Administración",                who: "Marisol" },
+    { slug: "legal",          name: "Legal",                         who: "Por asignar" }
+  ];
+  var EXTERNAL_OPTION = "Externo (IMSS/proveedor)";
+  var AREA_NAMES = AREAS.map(function(a){ return a.name; });
+
+  var EXAMPLES = {
+    direccion: { resultado: "Ej. Cronograma maestro y gobernanza del proyecto aprobados", actividad: "Ej. Arrancar el comité de seguimiento semanal con IMSS", depende: "aprueben el presupuesto final" },
+    implementacion: { resultado: "Ej. 10 hospitales CDMX con personal reclutado, contratado, capacitado y certificado", actividad: "Ej. Capacitar y certificar al personal hospitalario en el protocolo post-alta", depende: "validen y entreguen el protocolo clínico documentado" },
+    tecnologia: { resultado: "Ej. App con IA integrada, probada y disponible para operación", actividad: "Ej. Integrar el modelo de IA con el historial del paciente", depende: "definan las reglas de riesgo de reingreso" },
+    clinica: { resultado: "Ej. Protocolo clínico de seguimiento post-alta para EVC validado", actividad: "Ej. Diseñar los criterios clínicos de alerta para el call center", depende: "tengan la app lista para capturar variables clínicas" },
+    contenido: { resultado: "Ej. Contenido educativo para pacientes y cuidadores producido y aprobado", actividad: "Ej. Redactar y validar guiones para app y call center", depende: "aprueben los mensajes clínicos" },
+    administracion: { resultado: "Ej. Modelo de costos y facturación por resultados listo para operar", actividad: "Ej. Definir el esquema de facturación por resultados con IMSS", depende: "definan las condiciones contractuales de pago" },
+    legal: { resultado: "Ej. Contrato de servicio con garantía de resultados firmado con IMSS", actividad: "Ej. Negociar y cerrar cláusulas de garantía de resultados", depende: "aprueben los términos comerciales" }
+  };
+
+  var UNIDADES = ["días", "semanas", "meses"];
+
+  // ---------------- Referencia: Mapa funcional y Presupuesto (datos del Panel de control principal) ----------------
+  var FRENTES = [
+    { id:"operaciones", frente:"Implementación y RRHH", responsable:"Zueldy",
+      alcance:"Diseño e implementación de la operación; reclutamiento, contratación, capacitación y certificación del personal hospitalario y de call center; puesta en marcha.",
+      entregable:"Operación definida y personal de los primeros 10 hospitales contratado, capacitado, certificado y listo para operar.",
+      aprueba:"Dirección" },
+    { id:"tecnologia", frente:"Tecnología", responsable:"Juan Carlos",
+      alcance:"Plataforma, configuración tecnológica, integraciones, datos y herramientas necesarias para operar.",
+      entregable:"Plataforma / configuración tecnológica necesaria para el arranque.",
+      aprueba:"Dirección" },
+    { id:"clinica", frente:"Gestión Clínica", responsable:"David Barros",
+      alcance:"Protocolos clínicos, criterios, alertas y validación médica.",
+      entregable:"Protocolos y criterios clínicos definidos y aprobados.",
+      aprueba:"Dirección" },
+    { id:"contenido", frente:"Contenido", responsable:"Nicna",
+      alcance:"Desarrollo, producción y aprobación de contenidos educativos y materiales necesarios para la operación.",
+      entregable:"Contenidos requeridos para el arranque terminados y aprobados.",
+      aprueba:"Dirección" },
+    { id:"finanzas", frente:"Administración", responsable:"Marisol",
+      alcance:"Planeación y gestión de los recursos financieros y administrativos necesarios para la preparación y arranque del proyecto.",
+      entregable:"Presupuesto de la etapa preoperativa con el monto de recursos requerido para su ejecución.",
+      aprueba:"Dirección" },
+    { id:"legal", frente:"Legal", responsable:"Por asignar",
+      alcance:"Políticas de privacidad, consentimiento, protocolos de manejo de datos y margen legal del proyecto.",
+      entregable:"Marco legal y de privacidad aprobado para el arranque.",
+      aprueba:"Dirección" }
+  ];
+  var openFrenteId = null;
+
+  function renderOrgChart(){
+    var el = document.getElementById("orgChart");
+    var html = '<div class="org-root">Proyecto IMSS · ANA Care</div>' +
+      '<div class="org-connector"></div>' +
+      '<div class="org-direccion"><div class="od-title">Dirección</div><div class="od-who">Manuel · Ariel</div></div>' +
+      '<div class="org-children" id="orgChildren"></div>';
+    el.innerHTML = html;
+    var kids = document.getElementById("orgChildren");
+    FRENTES.forEach(function(f){
+      var card = document.createElement("div"); card.className = "frente-card";
+      card.innerHTML = '<div class="fc-name">' + f.frente + '</div><div class="fc-resp' + (f.responsable==="Pendiente"||f.responsable==="Por asignar"?" pending":"") + '">' + f.responsable + '</div>';
+      var btn = document.createElement("button"); btn.className = "btn small";
+      btn.textContent = (openFrenteId === f.id) ? "Ocultar ▲" : "Alcance ▼";
+      btn.addEventListener("click", function(){ openFrenteId = (openFrenteId===f.id) ? null : f.id; renderOrgChart(); renderFrenteDetail(); });
+      card.appendChild(btn);
+      kids.appendChild(card);
+    });
+  }
+  function renderFrenteDetail(){
+    var box = document.getElementById("frenteDetail");
+    if (!openFrenteId) { box.innerHTML = ""; return; }
+    var f = FRENTES.filter(function(x){ return x.id === openFrenteId; })[0];
+    box.innerHTML =
+      '<div class="frente-detail-card"><h3>' + f.frente + ' · ' + f.responsable + '</h3>' +
+      '<div class="fd-row"><div class="fd-label">Alcance</div><div class="fd-val">' + escapeHtml(f.alcance) + '</div></div>' +
+      '<div class="fd-row"><div class="fd-label">Entregable para el arranque</div><div class="fd-val">' + escapeHtml(f.entregable) + '</div></div>' +
+      '<div class="fd-row"><div class="fd-label">¿Quién aprueba?</div><div class="fd-val">' + escapeHtml(f.aprueba) + '</div></div></div>';
+  }
+
+  function hideAllViews(){
+    ["viewForm","viewMapa","viewActividadesOverview","viewActividadesArea","viewRuta"].forEach(function(id){
+      document.getElementById(id).style.display = "none";
+    });
+  }
+  function showMapa(){
+    state.view = "mapa"; hideAllViews();
+    document.getElementById("viewMapa").style.display = "block";
+    renderOrgChart(); renderFrenteDetail(); renderNav();
+  }
+  document.getElementById("navMapa").addEventListener("click", showMapa);
+
+  var state = { currentArea: null, currentActArea: null, view: "form", data: {}, resultados: [], dbNS: null, saving: false };
+
+  function uid(p){ return p + Math.random().toString(36).slice(2,9); }
+  function emptyActividad(){ return { id: uid("a"), nombre:"", predecesor_id:"", dependencias:[], tiempo_valor:"", tiempo_unidad:"semanas", fecha_compromiso:"", comentario:"", estado:"Pendiente" }; }
+  function emptyResultado(){ return { id: uid("r"), texto:"", actividades:[ emptyActividad(), emptyActividad() ] }; }
+  function areaBySlug(s){ for (var i=0;i<AREAS.length;i++) if (AREAS[i].slug===s) return AREAS[i]; return null; }
+  function exFor(s){ return EXAMPLES[s] || {resultado:"",actividad:"",depende:""}; }
+  function docStatus(d){ if(!d) return "empty"; if(d.completado) return "done"; if(d.resultados && d.resultados.length) return "draft"; return "empty"; }
+  function escapeHtml(s){ return String(s||"").replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+
+  function tiempoToDays(valor, unidad){
+    var v = parseFloat(valor); if (!v || v<=0) return null;
+    if (unidad === "días") return v;
+    if (unidad === "semanas") return v*7;
+    if (unidad === "meses") return v*30;
+    return v;
+  }
+  function computeSuggested(valor, unidad){
+    var days = tiempoToDays(valor, unidad);
+    if (days === null) return null;
+    var d = new Date(START_DATE.getTime());
+    d.setDate(d.getDate() + Math.round(days));
+    return d;
+  }
+  function dateToInputValue(d){ var m=("0"+(d.getMonth()+1)).slice(-2), day=("0"+d.getDate()).slice(-2); return d.getFullYear()+"-"+m+"-"+day; }
+  function fmtDateShort(d){ return d.toLocaleDateString('es-MX', {day:'numeric', month:'short', year:'numeric'}); }
+  var START_STR = fmtDateShort(START_DATE);
+
+  // ---------------- Respaldo local (por si el guardado no se confirma en el servidor) ----------------
+  function backupKey(slug){ return "backup_"+slug; }
+  function saveBackup(slug, payload){ try{ sessionStorage.setItem(backupKey(slug), JSON.stringify(payload)); }catch(e){} }
+  function readBackup(slug){ try{ var raw = sessionStorage.getItem(backupKey(slug)); return raw ? JSON.parse(raw) : null; }catch(e){ return null; } }
+  function clearBackup(slug){ try{ sessionStorage.removeItem(backupKey(slug)); }catch(e){} }
+  var pendingBackup = null;
+  function checkRecovery(slug, d){
+    var backup = readBackup(slug);
+    var banner = document.getElementById("recoveryBanner");
+    if (backup && (!d || !d.updatedAt || backup.updatedAt > d.updatedAt)) {
+      pendingBackup = { slug: slug, payload: backup };
+      document.getElementById("recoveryText").textContent = "⚠ Encontramos una respuesta de " + new Date(backup.updatedAt).toLocaleString('es-MX') + " guardada en este navegador que no se confirmó en el servidor la última vez.";
+      banner.style.display = "block";
+    } else {
+      pendingBackup = null;
+      banner.style.display = "none";
+    }
+  }
+  document.getElementById("recoveryDiscard").addEventListener("click", function(){
+    if (pendingBackup) clearBackup(pendingBackup.slug);
+    pendingBackup = null;
+    document.getElementById("recoveryBanner").style.display = "none";
+  });
+  document.getElementById("recoveryRestore").addEventListener("click", function(){
+    if (!pendingBackup) return;
+    var payload = pendingBackup.payload;
+    state.resultados = (payload.resultados && payload.resultados.length) ? payload.resultados : [emptyResultado()];
+    document.getElementById("contacto").value = payload.contacto || "";
+    document.getElementById("extra").value = payload.extra || "";
+    renderResultados();
+    document.getElementById("recoveryBanner").style.display = "none";
+    setSaveStatus('Datos recuperados de este navegador. Dale clic en "Guardar respuestas" para confirmarlos en el servidor.', "ok");
+  });
+
+  // ---------------- Sidebar nav ----------------
+  var navExpanded = { levantamiento:false, actividades:false };
+
+  function computeAreaPct(d){
+    if (!d || !d.resultados) return 0;
+    var total = 0, sum = 0;
+    d.resultados.forEach(function(r){ (r.actividades||[]).forEach(function(a){
+      if (!a.nombre) return;
+      total++;
+      var w = a.estado === "Completado" ? 1 : a.estado === "En curso" ? 0.5 : 0;
+      sum += w;
+    }); });
+    return total ? Math.round((sum/total)*100) : 0;
+  }
+
+  function renderNav(){
+    document.getElementById("navMapa").className = "nav-item" + (state.view==="mapa" ? " active":"");
+    document.getElementById("navRuta").className = "nav-item" + (state.view==="ruta" ? " active":"");
+
+    var navLev = document.getElementById("navLevantamiento");
+    var subLev = document.getElementById("subgroupLevantamiento");
+    navLev.className = "nav-parent" + (navExpanded.levantamiento ? " expanded":"");
+    navLev.querySelector(".caret").textContent = navExpanded.levantamiento ? "▾" : "▸";
+    subLev.className = "nav-subgroup" + (navExpanded.levantamiento ? " expanded":"");
+    subLev.innerHTML = "";
+    AREAS.forEach(function(a){
+      var st = docStatus(state.data[a.slug]);
+      var item = document.createElement("div");
+      item.className = "nav-item" + (state.view==="form" && state.currentArea===a.slug ? " active":"");
+      item.innerHTML = '<span class="dot ' + (st==="done"?"done":st==="draft"?"draft":"") + '"></span>' +
+        '<span class="label"><span class="name">' + a.name + '</span><span class="who">' + a.who + '</span></span>';
+      item.addEventListener("click", function(){ selectArea(a.slug); });
+      subLev.appendChild(item);
+    });
+
+    var navAct = document.getElementById("navActividades");
+    var subAct = document.getElementById("subgroupActividades");
+    navAct.className = "nav-parent" + (navExpanded.actividades ? " expanded":"");
+    navAct.querySelector(".caret").textContent = navExpanded.actividades ? "▾" : "▸";
+    subAct.className = "nav-subgroup" + (navExpanded.actividades ? " expanded":"");
+    subAct.innerHTML = "";
+    AREAS.forEach(function(a){
+      var d = state.data[a.slug];
+      var pct = computeAreaPct(d);
+      var item = document.createElement("div");
+      item.className = "nav-item" + (state.view==="actividadesArea" && state.currentActArea===a.slug ? " active":"");
+      item.innerHTML = '<span class="dot"></span>' +
+        '<span class="label"><span class="name">' + a.name + '</span><span class="who">' + pct + '% avance</span></span>';
+      item.addEventListener("click", function(){ selectActividadesArea(a.slug); });
+      subAct.appendChild(item);
+    });
+  }
+
+  document.getElementById("navLevantamiento").addEventListener("click", function(){
+    navExpanded.levantamiento = !navExpanded.levantamiento;
+    if (navExpanded.levantamiento) navExpanded.actividades = false;
+    renderNav();
+  });
+  document.getElementById("navActividades").addEventListener("click", function(){
+    navExpanded.actividades = !navExpanded.actividades;
+    if (navExpanded.actividades) navExpanded.levantamiento = false;
+    showActividadesOverview();
+  });
+
+  function selectArea(slug){
+    state.currentArea = slug; state.view = "form";
+    navExpanded.levantamiento = false;
+    hideAllViews();
+    document.getElementById("viewForm").style.display = "block";
+    document.getElementById("areaLabelDisplay").value = areaBySlug(slug).name;
+    loadAreaDoc(slug);
+    renderNav();
+  }
+
+  function loadAreaDoc(slug){
+
+    setSaveStatus("Cargando...");
+    if (!state.dbNS) { applyDocToForm(state.data[slug]||null, slug); setSaveStatus(""); return; }
+    state.dbNS.doc("respuestas/"+slug).get().then(function(snap){
+      var d = snap && snap.exists ? snap.data() : null;
+      state.data[slug] = d; applyDocToForm(d, slug); renderNav(); setSaveStatus("");
+    }).catch(function(){ applyDocToForm(state.data[slug]||null, slug); setSaveStatus(""); });
+  }
+
+  function migrateActividad(a){
+    if (a.dependencias !== undefined) {
+      if (a.comentario === undefined) a.comentario = "";
+      if (a.predecesor_id === undefined) a.predecesor_id = "";
+      if (a.estado === undefined) a.estado = "Pendiente";
+      return a;
+    }
+    var deps = [];
+    if (a.dep_areas && a.dep_areas.length) {
+      deps = a.dep_areas.map(function(name){ return { area:name, detalle:a.dep_detalle||"" }; });
+    } else if (a.dep_area && a.dep_area !== "Ninguna" && a.dep_area.indexOf("Ninguna")!==0) {
+      deps = [ { area:a.dep_area, detalle:a.dep_detalle||"" } ];
+    }
+    return { id:a.id||uid("a"), nombre:a.nombre||"", predecesor_id:"", dependencias:deps, tiempo_valor:a.tiempo_valor||"", tiempo_unidad:a.tiempo_unidad||"semanas", fecha_compromiso:a.fecha_compromiso||a.fecha_limite||"", comentario:a.comentario||"", estado:a.estado||"Pendiente" };
+  }
+
+  function applyDocToForm(d, slug){
+    if (d && d.resultados && d.resultados.length) {
+      state.resultados = JSON.parse(JSON.stringify(d.resultados));
+      state.resultados.forEach(function(r){ r.actividades = (r.actividades||[]).map(migrateActividad); });
+    } else {
+      state.resultados = [ emptyResultado(), emptyResultado(), emptyResultado() ];
+    }
+    document.getElementById("contacto").value = (d && d.contacto) || areaBySlug(slug).who;
+    document.getElementById("extra").value = (d && d.extra) || "";
+    renderResultados();
+    renderLastSavedNote(d);
+    checkRecovery(slug, d);
+  }
+
+  function renderLastSavedNote(d){
+    var el = document.getElementById("lastSavedNote");
+    if (!el) return;
+    if (d && d.updatedAt) {
+      el.textContent = "Última vez guardado: " + new Date(d.updatedAt).toLocaleString('es-MX');
+      el.style.color = "var(--ok)";
+    } else {
+      el.textContent = "Todavía no hay nada guardado para esta área.";
+      el.style.color = "var(--text-soft)";
+    }
+  }
+
+  // ---------------- Cleanup filas vacías (no bloquear el guardado por defaults sin usar) ----------------
+  function isActividadEmpty(a){
+    return !a.nombre && !a.predecesor_id && (!a.dependencias || !a.dependencias.length) && !a.tiempo_valor && !a.fecha_compromiso && !a.comentario;
+  }
+  function isResultadoEmpty(r){ return !r.texto && r.actividades.every(isActividadEmpty); }
+  function cleanupEmpty(){
+    state.resultados.forEach(function(r){
+      var head = r.actividades.slice(0,1);
+      var rest = r.actividades.slice(1).filter(function(a){ return !isActividadEmpty(a); });
+      r.actividades = head.concat(rest);
+    });
+    var nonEmpty = state.resultados.filter(function(r){ return !isResultadoEmpty(r); });
+    state.resultados = nonEmpty.length ? nonEmpty : state.resultados.slice(0,1);
+    // si el predecesor elegido ya no existe (se borró esa actividad), lo limpiamos
+    var validIds = {};
+    state.resultados.forEach(function(r){ r.actividades.forEach(function(a){ validIds[a.id] = true; }); });
+    state.resultados.forEach(function(r){ r.actividades.forEach(function(a){ if (a.predecesor_id && !validIds[a.predecesor_id]) a.predecesor_id = ""; }); });
+  }
+
+  // ---------------- Índice de actividades propias (para "depende de otra actividad tuya") ----------------
+  function buildActivityIndex(resultadosArr){
+    var list = [];
+    (resultadosArr||[]).forEach(function(r, ri){
+      (r.actividades||[]).forEach(function(a, ai){
+        var label = "R" + (ri+1) + ".A" + (ai+1) + (a.nombre ? ": " + a.nombre.slice(0,34) + (a.nombre.length>34?"…":"") : " (sin nombre)");
+        list.push({ id: a.id, label: label });
+      });
+    });
+    return list;
+  }
+  function refreshPredecessorSelects(){
+    var index = buildActivityIndex(state.resultados);
+    document.querySelectorAll("select.own-pred-select").forEach(function(sel){
+      var ownId = sel.getAttribute("data-own-id");
+      var desired = sel.getAttribute("data-desired") || "";
+      sel.innerHTML = "";
+      var ph = document.createElement("option"); ph.value = ""; ph.textContent = "Ninguna (puede iniciar de inmediato)";
+      sel.appendChild(ph);
+      index.forEach(function(item){
+        if (item.id === ownId) return;
+        var o = document.createElement("option"); o.value = item.id; o.textContent = item.label;
+        sel.appendChild(o);
+      });
+      var stillValid = desired && index.some(function(item){ return item.id === desired && item.id !== ownId; });
+      sel.value = stillValid ? desired : "";
+      sel.setAttribute("data-desired", sel.value);
+    });
+  }
+
+  // ---------------- Render resultados + tabla de actividades ----------------
+  function renderResultados(){
+    var wrap = document.getElementById("resultadosList");
+    wrap.innerHTML = "";
+    var ex = exFor(state.currentArea);
+    state.resultados.forEach(function(r, ri){
+      var block = document.createElement("div");
+      block.className = "resultado-block";
+
+      var head = document.createElement("div");
+      head.className = "rhead";
+      head.innerHTML = '<span class="rnum">Resultado ' + (ri+1) + '</span>';
+      var delR = document.createElement("button");
+      delR.type = "button"; delR.className = "btn small danger"; delR.textContent = "Eliminar";
+      delR.style.display = state.resultados.length > 1 ? "inline-block" : "none";
+      delR.addEventListener("click", function(){ state.resultados.splice(ri,1); renderResultados(); });
+      head.appendChild(delR);
+      block.appendChild(head);
+
+      var field = document.createElement("div");
+      field.className = "field";
+      field.innerHTML = '<label>1. Resultado concreto que debe quedar terminado <span class="req-star">*</span></label>';
+      var inp = document.createElement("input");
+      inp.type = "text"; inp.required = true; inp.placeholder = ex.resultado; inp.value = r.texto || "";
+      inp.addEventListener("input", function(){ r.texto = inp.value; });
+      field.appendChild(inp);
+      block.appendChild(field);
+
+      var actWrap = document.createElement("div");
+      actWrap.className = "activities-wrap";
+      actWrap.innerHTML = '<div class="awrap-label">2. Actividades principales para lograrlo — completa cada fila entera o elimínala</div>';
+
+      var tblScroll = document.createElement("div");
+      tblScroll.className = "table-scroll";
+      var table = document.createElement("table");
+      table.className = "activity-table";
+      table.innerHTML =
+        '<colgroup><col class="c-num"><col class="c-act"><col class="c-dep"><col class="c-time"><col class="c-date"><col class="c-com"><col class="c-del"></colgroup>' +
+        '<thead><tr>' +
+          '<th>#</th>' +
+          '<th>2. Actividad <span class="req-star">*</span><span class="th-sub">Qué hay que hacer</span></th>' +
+          '<th>3. Dependencias<span class="th-sub">Qué tiene que pasar antes para poder empezarla</span></th>' +
+          '<th>4. Tiempo real <span class="req-star">*</span><span class="th-sub">Cuánto te tomará entregarla</span></th>' +
+          '<th>5. Fecha compromiso <span class="req-star">*</span><span class="th-sub">Inicio preoperativo (15 oct 2026) + tiempo del punto 4</span></th>' +
+          '<th>Comentarios<span class="th-sub">Opcional</span></th>' +
+          '<th></th>' +
+        '</tr></thead>';
+      var tbody = document.createElement("tbody");
+      r.actividades.forEach(function(act, ai){ tbody.appendChild(renderActividadFila(r, act, ai, ex)); });
+      table.appendChild(tbody);
+      tblScroll.appendChild(table);
+      actWrap.appendChild(tblScroll);
+
+      var addA = document.createElement("button");
+      addA.type = "button"; addA.className = "btn-add-activity"; addA.innerHTML = "＋ Agregar otra actividad";
+      addA.addEventListener("click", function(){ r.actividades.push(emptyActividad()); renderResultados(); });
+      actWrap.appendChild(addA);
+
+      block.appendChild(actWrap);
+      wrap.appendChild(block);
+    });
+    refreshPredecessorSelects();
+  }
+
+  function renderActividadFila(resultado, act, ai, ex){
+    var tr = document.createElement("tr");
+
+    // # número
+    var tdNum = document.createElement("td");
+    tdNum.className = "num-cell";
+    tdNum.innerHTML = '<span class="act-badge">' + (ai+1) + '</span>';
+    tr.appendChild(tdNum);
+
+    // Actividad (textarea para no truncar)
+    var tdAct = document.createElement("td");
+    var iAct = document.createElement("textarea");
+    iAct.className = "act-input"; iAct.rows = 2; iAct.required = true; iAct.placeholder = ex.actividad; iAct.value = act.nombre || "";
+    iAct.addEventListener("input", function(){ act.nombre = iAct.value; });
+    iAct.addEventListener("blur", function(){ refreshPredecessorSelects(); });
+    tdAct.appendChild(iAct);
+    tr.appendChild(tdAct);
+
+    // Depende de: primero una actividad PROPIA anterior (misma área), luego áreas externas
+    var tdDep = document.createElement("td");
+
+    var ownLabel = document.createElement("div");
+    ownLabel.className = "dep-sublabel";
+    ownLabel.textContent = "¿Debes terminar otra actividad tuya antes?";
+    var ownSel = document.createElement("select");
+    ownSel.className = "own-pred-select";
+    ownSel.setAttribute("data-own-id", act.id);
+    ownSel.setAttribute("data-desired", act.predecesor_id || "");
+    ownSel.addEventListener("change", function(){ act.predecesor_id = ownSel.value; ownSel.setAttribute("data-desired", ownSel.value); });
+    tdDep.appendChild(ownLabel);
+    tdDep.appendChild(ownSel);
+
+    var extLabel = document.createElement("div");
+    extLabel.className = "dep-sublabel";
+    extLabel.textContent = "¿Necesitas algo de otra área?";
+    tdDep.appendChild(extLabel);
+
+    var pairsWrap = document.createElement("div");
+    var addSel = document.createElement("select"); addSel.className = "add-area-select";
+
+    function availableOptions(){
+      var used = act.dependencias.map(function(p){ return p.area; });
+      return AREA_NAMES.concat([EXTERNAL_OPTION]).filter(function(n){ return used.indexOf(n) === -1; });
+    }
+    function renderPairs(){
+      pairsWrap.innerHTML = "";
+      if (!act.dependencias.length) {
+        var note = document.createElement("div");
+        note.className = "dep-empty-note";
+        note.textContent = "Ninguna — agrega un área si esta actividad depende de otra.";
+        pairsWrap.appendChild(note);
+      }
+      act.dependencias.forEach(function(pair, pi){
+        var box = document.createElement("div"); box.className = "dep-pair";
+        var pHead = document.createElement("div"); pHead.className = "dep-pair-head";
+        var nameSpan = document.createElement("span"); nameSpan.className = "dep-area-name"; nameSpan.textContent = pair.area;
+        var x = document.createElement("button"); x.type = "button"; x.className = "chip-x"; x.textContent = "✕"; x.title = "Quitar " + pair.area;
+        x.addEventListener("click", function(){ act.dependencias.splice(pi,1); renderPairs(); renderAddSelect(); });
+        pHead.appendChild(nameSpan); pHead.appendChild(x);
+        box.appendChild(pHead);
+        var det = document.createElement("textarea");
+        det.className = "dep-detail"; det.rows = 2; det.required = true;
+        det.placeholder = "Qué necesitas que " + pair.area + " te dé, haga o entregue. Ej.: que " + ex.depende;
+        det.value = pair.detalle || "";
+        det.addEventListener("input", function(){ pair.detalle = det.value; });
+        box.appendChild(det);
+        pairsWrap.appendChild(box);
+      });
+    }
+    function renderAddSelect(){
+      addSel.innerHTML = "";
+      var ph = document.createElement("option"); ph.value = ""; ph.textContent = act.dependencias.length ? "+ agregar otra área" : "+ agregar área";
+      addSel.appendChild(ph);
+      availableOptions().forEach(function(n){ var o = document.createElement("option"); o.value = n; o.textContent = n; addSel.appendChild(o); });
+    }
+    addSel.addEventListener("change", function(){
+      if (addSel.value) { act.dependencias.push({area: addSel.value, detalle:""}); renderPairs(); renderAddSelect(); }
+    });
+    renderPairs(); renderAddSelect();
+    tdDep.appendChild(pairsWrap); tdDep.appendChild(addSel);
+    tr.appendChild(tdDep);
+
+    // Tiempo (apilado: número, luego unidad)
+    var tdTime = document.createElement("td");
+    var numI = document.createElement("input");
+    numI.style.marginBottom = "4px";
+    numI.type = "number"; numI.min = "0"; numI.required = true; numI.placeholder = "3"; numI.value = act.tiempo_valor || "";
+    var unitSel = document.createElement("select");
+    UNIDADES.forEach(function(u){ var o=document.createElement("option"); o.value=u; o.textContent=u; if((act.tiempo_unidad||"semanas")===u) o.selected=true; unitSel.appendChild(o); });
+    tdTime.appendChild(numI); tdTime.appendChild(unitSel);
+    tr.appendChild(tdTime);
+
+    // Fecha compromiso + explicación narrativa de la sugerencia
+    var tdDate = document.createElement("td");
+    var dateI = document.createElement("input");
+    dateI.style.marginBottom = "4px";
+    dateI.type = "date"; dateI.required = true; dateI.value = act.fecha_compromiso || "";
+    var hint = document.createElement("div"); hint.className = "date-hint";
+    tdDate.appendChild(dateI); tdDate.appendChild(hint);
+    tr.appendChild(tdDate);
+
+    function updateHint(){
+      hint.innerHTML = "";
+      var sug = computeSuggested(numI.value, unitSel.value);
+      if (!sug) { hint.textContent = "Escribe el tiempo (a la izquierda) y aquí te proponemos una fecha compromiso."; return; }
+      var sugStr = fmtDateShort(sug), sugVal = dateToInputValue(sug);
+      var span = document.createElement("span");
+      var base = "Si esta actividad toma " + numI.value + " " + unitSel.value + " y el proyecto arranca su etapa preoperativa el " + START_STR + ", podría estar lista para el <strong>" + sugStr + "</strong>.";
+      if (dateI.value && dateI.value !== sugVal) {
+        span.innerHTML = "⚠ Tu fecha compromiso no coincide con esta cuenta. " + base;
+        hint.className = "date-hint warn";
+      } else {
+        span.innerHTML = base;
+        hint.className = "date-hint";
+      }
+      hint.appendChild(span);
+      var useBtn = document.createElement("button");
+      useBtn.type = "button"; useBtn.className = "use-sug"; useBtn.textContent = "Usar esta fecha (" + sugStr + ")";
+      useBtn.addEventListener("click", function(){ dateI.value = sugVal; act.fecha_compromiso = sugVal; updateHint(); });
+      hint.appendChild(useBtn);
+    }
+    numI.addEventListener("input", function(){ act.tiempo_valor = numI.value; updateHint(); });
+    unitSel.addEventListener("change", function(){ act.tiempo_unidad = unitSel.value; updateHint(); });
+    dateI.addEventListener("input", function(){ act.fecha_compromiso = dateI.value; updateHint(); });
+    updateHint();
+
+    // Comentarios
+    var tdCom = document.createElement("td");
+    var ta = document.createElement("textarea");
+    ta.className = "com-input"; ta.rows = 2; ta.placeholder = "Notas adicionales..."; ta.value = act.comentario || "";
+    ta.addEventListener("input", function(){ act.comentario = ta.value; });
+    tdCom.appendChild(ta);
+    tr.appendChild(tdCom);
+
+    // Eliminar
+    var tdDel = document.createElement("td");
+    var delBtn = document.createElement("button");
+    delBtn.type = "button"; delBtn.className = "del-x"; delBtn.innerHTML = "✕"; delBtn.title = "Quitar esta actividad";
+    if (resultado.actividades.length <= 1) delBtn.disabled = true;
+    delBtn.addEventListener("click", function(){ resultado.actividades.splice(ai,1); renderResultados(); });
+    tdDel.appendChild(delBtn);
+    tr.appendChild(tdDel);
+
+    return tr;
+  }
+
+  function collectFormData(){
+    return { area: areaBySlug(state.currentArea).name, contacto: document.getElementById("contacto").value,
+      resultados: state.resultados, extra: document.getElementById("extra").value, completado:true, updatedAt: Date.now() };
+  }
+  function setSaveStatus(msg, cls){ var el=document.getElementById("saveStatus"); el.textContent=msg||""; el.className="save-status"+(cls?" "+cls:""); }
+
+  function verifyPersisted(docRef, payload, attemptsLeft, delayMs){
+    return docRef.get().then(function(snap){
+      var sd = snap && snap.exists ? snap.data() : null;
+      var persisted = !!(sd && sd.updatedAt === payload.updatedAt);
+      if (persisted) return sd;
+      if (attemptsLeft <= 1) return null;
+      return new Promise(function(resolve){ setTimeout(resolve, delayMs); }).then(function(){
+        return verifyPersisted(docRef, payload, attemptsLeft - 1, Math.min(delayMs * 1.7, 2200));
+      });
+    }).catch(function(){ return null; });
+  }
+
+  function save(){
+    if (!state.currentArea) return;
+    cleanupEmpty();
+    renderResultados();
+    var form = document.getElementById("respForm");
+    if (!form.reportValidity()) { setSaveStatus("Completa los campos obligatorios marcados (o elimina la fila que no vayas a usar).", "err"); return; }
+    if (!state.dbNS) { setSaveStatus("No hay conexión con la base de datos compartida. Recarga la página e inténtalo de nuevo.", "err"); showConnBanner("No hay conexión con la base de datos compartida, así que nada de lo que llenes se está guardando."); return; }
+    var payload = collectFormData();
+    var areaAtSaveTime = state.currentArea;
+    var docRef = state.dbNS.doc("respuestas/"+areaAtSaveTime);
+    saveBackup(areaAtSaveTime, payload);
+    state.saving = true; document.getElementById("saveBtn").disabled = true; setSaveStatus("Guardando...");
+
+    function finish(){ state.saving=false; document.getElementById("saveBtn").disabled=false; }
+
+    docRef.set(payload).then(function(){
+      setSaveStatus("Guardando... confirmando");
+      // Verificación real con reintentos: la primera vez que se escribe en esta
+      // herramienta puede haber un pequeño retraso antes de que la lectura refleje
+      // el guardado, así que reintentamos unas cuantas veces antes de avisar un error.
+      return verifyPersisted(docRef, payload, 5, 400);
+    }).then(function(sd){
+      finish();
+      if (sd) {
+        clearBackup(areaAtSaveTime);
+        if (state.currentArea === areaAtSaveTime) { document.getElementById("recoveryBanner").style.display = "none"; pendingBackup = null; }
+        state.data[areaAtSaveTime] = sd;
+        renderNav();
+        if (state.currentArea === areaAtSaveTime) renderLastSavedNote(sd);
+        setSaveStatus("Guardado ✓ (confirmado)", "ok");
+        setTimeout(function(){ setSaveStatus(""); }, 4000);
+      } else {
+        setSaveStatus("⚠ Se envió el guardado pero no pude confirmar que quedó registrado. Tu respuesta queda respaldada en este navegador — no cierres la página; inténtalo de nuevo en unos segundos.", "err");
+      }
+    }).catch(function(){
+      finish();
+      setSaveStatus("No se pudo guardar. Tu respuesta queda respaldada en este navegador. Verifica tu conexión e inténtalo de nuevo.", "err");
+    });
+  }
+
+  // ---------------- Actividades: resumen (lista) + por área (con estado) ----------------
+  function showActividadesOverview(){
+    state.view = "actividadesOverview";
+    hideAllViews();
+    document.getElementById("viewActividadesOverview").style.display = "block";
+    renderNav();
+    loadAllDocs();
+  }
+
+  function selectActividadesArea(slug){
+    state.view = "actividadesArea";
+    state.currentActArea = slug;
+    navExpanded.actividades = false;
+    hideAllViews();
+    document.getElementById("viewActividadesArea").style.display = "block";
+    document.getElementById("actAreaTitle").textContent = "Actividades — " + areaBySlug(slug).name;
+    renderNav();
+    if (!state.dbNS) { renderActAreaList(slug); return; }
+    state.dbNS.doc("respuestas/"+slug).get().then(function(snap){
+      state.data[slug] = snap && snap.exists ? snap.data() : null;
+      renderActAreaList(slug);
+    }).catch(function(){ renderActAreaList(slug); });
+  }
+
+  function renderProgressBar(elId, label, pct, extra){
+    var wrap = document.getElementById(elId);
+    wrap.innerHTML =
+      '<div class="p-top"><span class="p-label">' + label + '</span><span class="p-pct">' + (extra||"") + pct + '%</span></div>' +
+      '<div class="progress-bar-track"><div class="progress-bar-fill" style="width:' + pct + '%"></div></div>';
+  }
+
+  function renderActOverview(){
+    var totalAreasRespondidas = AREAS.filter(function(a){ return docStatus(state.data[a.slug]) !== "empty"; }).length;
+    var sumPct = 0;
+    AREAS.forEach(function(a){ sumPct += computeAreaPct(state.data[a.slug]); });
+    var overallPct = Math.round(sumPct / AREAS.length);
+    renderProgressBar("progressWrap", "Avance general de ejecución (todas las áreas)", overallPct, "");
+
+    var list = document.getElementById("actOverviewList");
+    list.innerHTML = "";
+    AREAS.forEach(function(a){
+      var d = state.data[a.slug];
+      var pct = computeAreaPct(d);
+      var nAct = 0;
+      if (d && d.resultados) d.resultados.forEach(function(r){ nAct += (r.actividades||[]).filter(function(x){return x.nombre;}).length; });
+      var row = document.createElement("div"); row.className = "act-overview-row";
+      row.innerHTML =
+        '<div class="aor-name">' + a.name + '</div>' +
+        '<div class="aor-who">' + a.who + '</div>' +
+        '<div class="aor-bar"><div class="progress-bar-track"><div class="progress-bar-fill" style="width:' + pct + '%"></div></div>' +
+        '<div style="font-size:10.5px; color:var(--text-soft); margin-top:2px;">' + nAct + ' actividad(es) capturada(s)' + (nAct===0 ? " — aún sin responder" : "") + '</div></div>' +
+        '<div class="aor-pct">' + pct + '%</div>';
+      row.addEventListener("click", function(){ selectActividadesArea(a.slug); });
+      list.appendChild(row);
+    });
+  }
+
+  function updateEstado(slug, actId, nuevoEstado){
+    var d = state.data[slug];
+    if (!d) { showConnBanner("No se pudo actualizar: esta área no cargó datos (sin conexión). Recarga la página."); return; }
+    (d.resultados||[]).forEach(function(r){ (r.actividades||[]).forEach(function(a){ if (a.id === actId) a.estado = nuevoEstado; }); });
+    renderActAreaList(slug);
+    if (!state.dbNS) { showConnBanner("Cambio aplicado solo en esta pantalla: no hay conexión con la base de datos, así que no se guardó. Reintenta la conexión."); return; }
+    state.dbNS.doc("respuestas/"+slug).set(d).catch(function(){ showConnBanner("No se pudo guardar este cambio de estado. Verifica tu conexión e inténtalo de nuevo."); });
+  }
+
+  function renderActAreaList(slug){
+    var d = state.data[slug];
+    var pct = computeAreaPct(d);
+    renderProgressBar("actAreaProgressWrap", areaBySlug(slug).name + " — avance de ejecución", pct, "");
+    var wrap = document.getElementById("actAreaList");
+    wrap.innerHTML = "";
+    var any = false, n = 0;
+    (d && d.resultados || []).forEach(function(r){
+      (r.actividades || []).forEach(function(a){
+        if (!a.nombre) return;
+        any = true; n++;
+        var row = document.createElement("div"); row.className = "act-row";
+        row.innerHTML = '<div class="ar-num">' + n + '</div>' +
+          '<div class="ar-body"><div class="ar-name">' + escapeHtml(a.nombre) + '</div>' +
+          '<div class="ar-meta">' + escapeHtml(r.texto||"") + ' · ' + escapeHtml(fmtTiempo(a)) + ' · compromiso ' + escapeHtml(a.fecha_compromiso||"—") + '</div></div>';
+        var sel = document.createElement("select"); sel.className = "ar-estado";
+        ["Pendiente","En curso","Completado"].forEach(function(op){
+          var o = document.createElement("option"); o.value = op; o.textContent = op;
+          if ((a.estado||"Pendiente") === op) o.selected = true;
+          sel.appendChild(o);
+        });
+        sel.className = "ar-estado " + (a.estado==="Completado"?"completado":a.estado==="En curso"?"en-curso":"pendiente");
+        sel.addEventListener("change", function(){ updateEstado(slug, a.id, sel.value); });
+        row.appendChild(sel);
+        wrap.appendChild(row);
+      });
+    });
+    if (!any) wrap.innerHTML = '<div class="act-empty">Esta área todavía no ha capturado actividades en el levantamiento.</div>';
+  }
+
+  // ---------------- Ruta crítica preliminar (a partir de lo capturado) ----------------
+  function showRuta(){
+    state.view = "ruta"; hideAllViews();
+    document.getElementById("viewRuta").style.display = "block";
+    renderNav();
+    if (!state.dbNS) { renderRuta(); return; }
+    var promises = AREAS.map(function(a){
+      return state.dbNS.doc("respuestas/"+a.slug).get().then(function(snap){ state.data[a.slug]=snap && snap.exists ? snap.data() : null; }).catch(function(){});
+    });
+    Promise.all(promises).then(renderRuta);
+  }
+  document.getElementById("navRuta").addEventListener("click", showRuta);
+
+  function renderRuta(){
+    var MS_DAY = 86400000;
+
+    // 1) Reunir todas las actividades capturadas con duración y fecha compromiso
+    var acts = [];
+    AREAS.forEach(function(a){
+      var d = state.data[a.slug];
+      if (!d || !d.resultados) return;
+      d.resultados.forEach(function(r){
+        (r.actividades||[]).forEach(function(act){
+          var days = tiempoToDays(act.tiempo_valor, act.tiempo_unidad);
+          if (!act.nombre || !days) return;
+          acts.push({
+            id: act.id, nombre: act.nombre, area: a.name, dur: Math.max(1, Math.round(days)),
+            predId: act.predecesor_id || null, fechaDeclarada: act.fecha_compromiso || null,
+            estado: act.estado || "Pendiente"
+          });
+        });
+      });
+    });
+
+    var banner = document.getElementById("rutaBanner");
+    var gridEl = document.getElementById("ganttGrid");
+    if (!acts.length) {
+      banner.textContent = "Todavía no hay actividades con tiempo capturado para calcular la ruta.";
+      gridEl.innerHTML = "";
+      return;
+    }
+
+    var byId = {}; acts.forEach(function(a){ byId[a.id] = a; });
+    // Ignorar predecesores que apunten a algo que ya no existe (se borró esa actividad)
+    acts.forEach(function(a){ if (a.predId && !byId[a.predId]) a.predId = null; });
+
+    // 2) Paso adelante: Inicio/Fin más temprano (ES/EF)
+    var EFcache = {};
+    function computeEF(id){
+      if (EFcache[id]) return EFcache[id];
+      var a = byId[id];
+      var es;
+      if (a.predId) { es = new Date(computeEF(a.predId).getTime() + MS_DAY); }
+      else { es = START_DATE; }
+      var ef = new Date(es.getTime() + (a.dur - 1) * MS_DAY);
+      a.ES = es; a.EF = ef;
+      EFcache[id] = ef;
+      return ef;
+    }
+    acts.forEach(function(a){ computeEF(a.id); });
+    var projectEnd = new Date(Math.max.apply(null, acts.map(function(a){ return a.EF.getTime(); })));
+
+    // 3) Paso atrás: Inicio/Fin más tardío (LS/LF) y holgura
+    var succ = {}; acts.forEach(function(a){ succ[a.id] = []; });
+    acts.forEach(function(a){ if (a.predId) succ[a.predId].push(a.id); });
+    var LScache = {};
+    function computeLS(id){
+      if (LScache[id]) return LScache[id];
+      var a = byId[id];
+      var s = succ[id];
+      var lf;
+      if (s.length) { lf = new Date(Math.min.apply(null, s.map(function(sid){ return computeLS(sid).getTime(); })) - MS_DAY); }
+      else { lf = projectEnd; }
+      var ls = new Date(lf.getTime() - (a.dur - 1) * MS_DAY);
+      a.LS = ls; a.LF = lf;
+      a.holgura = Math.round((ls - a.ES)/MS_DAY);
+      a.sinSucesoras = s.length === 0;
+      LScache[id] = ls;
+      return ls;
+    }
+    acts.forEach(function(a){ computeLS(a.id); });
+    acts.forEach(function(a){ a.critica = a.holgura === 0; });
+
+    // 4) Banner con el cierre calculado vs el 15 de enero de 2027
+    var target = new Date(2027,0,15);
+    var diffDays = Math.round((projectEnd - target)/MS_DAY);
+    var msg = "Cierre calculado con lo capturado hasta ahora: <strong>" + fmtDateShort(projectEnd) + "</strong>";
+    if (diffDays > 0) msg += " — <strong>" + diffDays + " día(s) después</strong> del arranque objetivo (15 ene 2027).";
+    else if (diffDays < 0) msg += " — " + Math.abs(diffDays) + " día(s) antes del arranque objetivo (15 ene 2027).";
+    else msg += " — justo en la fecha de arranque objetivo.";
+    msg += " Ten en cuenta que, como todavía no se cruzan las dependencias entre áreas, este cierre puede moverse más adelante.";
+    banner.innerHTML = msg;
+
+    // 5) Línea de tiempo: de START_DATE a projectEnd (ampliando si "hoy" cae fuera)
+    var today = new Date(); today.setHours(0,0,0,0);
+    var tlStart = new Date(Math.min(START_DATE.getTime(), today.getTime()));
+    var tlEnd = new Date(Math.max(projectEnd.getTime(), today.getTime()));
+    var totalDays = Math.max(1, Math.round((tlEnd - tlStart)/MS_DAY));
+    function posPct(d){ return ((d - tlStart)/MS_DAY / totalDays) * 100; }
+
+    var months = [];
+    var cursor = new Date(tlStart.getFullYear(), tlStart.getMonth(), 1);
+    while (cursor <= tlEnd) {
+      var monthStart = new Date(Math.max(cursor.getTime(), tlStart.getTime()));
+      var nextMonth = new Date(cursor.getFullYear(), cursor.getMonth()+1, 1);
+      var monthEnd = new Date(Math.min(nextMonth.getTime()-MS_DAY, tlEnd.getTime()));
+      var days = Math.round((monthEnd - monthStart)/MS_DAY) + 1;
+      months.push({ label: cursor.toLocaleDateString('es-MX',{month:'short',year:'numeric'}), pct: (days/totalDays)*100 });
+      cursor = nextMonth;
+    }
+
+    acts.sort(function(x,y){ return x.ES - y.ES; });
+
+    // 6) Construir el grid (encabezado + una fila por actividad)
+    var html = "";
+    html += '<div class="gh">ID</div><div class="gh">Actividad / Grupo</div><div class="gh">Inicio</div><div class="gh">Fin</div><div class="gh">Holgura</div><div class="gh">Avance</div>';
+    html += '<div class="gh"><div class="gantt-timeline-header">' + months.map(function(m){ return '<div class="gtm" style="width:'+m.pct+'%">'+escapeHtml(m.label)+'</div>'; }).join("") + '</div></div>';
+
+    var todayPct = posPct(today);
+    acts.forEach(function(a, i){
+      var rowClass = a.critica ? "row-crit" : "";
+      var pct = a.estado === "Completado" ? 100 : a.estado === "En curso" ? 50 : 0;
+      html += '<div class="gc center ' + rowClass + '">' + (i+1) + '</div>';
+      html += '<div class="gc ' + rowClass + '"><span class="g-name">' + escapeHtml(a.nombre) + (a.critica ? '<span class="crit-tag">RUTA CRÍTICA</span>' : '') + '</span><span class="g-area">' + escapeHtml(a.area) + '</span>' + (a.sinSucesoras && !a.critica ? '<span class="holgura-star">* nadie la declara predecesora — margen hasta el cierre</span>' : '') + '</div>';
+      html += '<div class="gc center ' + rowClass + '">' + fmtDateShort(a.ES) + '</div>';
+      html += '<div class="gc center ' + rowClass + '">' + fmtDateShort(a.EF) + '</div>';
+      html += '<div class="gc center ' + rowClass + '">' + (a.critica ? '0 d' : (a.holgura + ' d' + (a.sinSucesoras?'*':''))) + '</div>';
+      html += '<div class="gc center ' + rowClass + '">' + pct + '%</div>';
+
+      var barLeft = posPct(a.ES), barWidth = Math.max(posPct(new Date(a.EF.getTime()+MS_DAY)) - barLeft, 0.6);
+      var timelineInner = '<div class="gantt-bar ' + (a.critica?'crit':'noncrit') + '" style="left:' + barLeft + '%; width:' + barWidth + '%;"></div>';
+      if (!a.critica && a.holgura > 0) {
+        var floatLeft = posPct(new Date(a.EF.getTime()+MS_DAY));
+        var floatWidth = posPct(new Date(a.LF.getTime()+MS_DAY)) - floatLeft;
+        timelineInner += '<div class="gantt-float-bar" style="left:' + floatLeft + '%; width:' + Math.max(floatWidth,0) + '%;"></div>';
+      }
+      if (todayPct >= 0 && todayPct <= 100) {
+        timelineInner += '<div class="gantt-today-line" style="left:' + todayPct + '%;"></div>';
+      }
+      html += '<div class="gc ' + rowClass + '" style="padding:0;"><div class="gantt-timeline">' + timelineInner + '</div></div>';
+    });
+
+    gridEl.innerHTML = html;
+  }
+
+  function fmtTiempo(a){ return a.tiempo_valor ? (a.tiempo_valor + " " + (a.tiempo_unidad||"")) : "—"; }
+  function fmtDepende(a){
+    if (!a.dependencias || !a.dependencias.length) return "Ninguna";
+    return a.dependencias.map(function(p){ return p.area + (p.detalle ? ": " + p.detalle : ""); }).join(" | ");
+  }
+  function fmtPredecesor(a, resultadosArr){
+    if (!a.predecesor_id) return "Ninguna";
+    var index = buildActivityIndex(resultadosArr);
+    var found = index.filter(function(item){ return item.id === a.predecesor_id; })[0];
+    return found ? found.label : "Ninguna";
+  }
+
+  function renderDetailHtml(d){
+    var html = '<div class="detail-box">';
+    (d.resultados||[]).forEach(function(r,i){
+      if (!r.texto && !(r.actividades||[]).some(function(x){return x.nombre;})) return;
+      html += '<div class="res"><div class="res-title">' + (i+1) + '. ' + escapeHtml(r.texto||"(sin nombre)") + '</div>';
+      (r.actividades||[]).forEach(function(a, ai){
+        if (!a.nombre) return;
+        html += '<div class="act">' + (ai+1) + '. ' + escapeHtml(a.nombre) +
+          '<br><span class="k">Precedida por (misma área):</span> ' + escapeHtml(fmtPredecesor(a, d.resultados)) +
+          '<br><span class="k">Depende de:</span> ' + escapeHtml(fmtDepende(a)) +
+          ' &nbsp;·&nbsp; <span class="k">Tiempo:</span> ' + escapeHtml(fmtTiempo(a)) +
+          ' &nbsp;·&nbsp; <span class="k">Fecha compromiso:</span> ' + escapeHtml(a.fecha_compromiso||"—") + '</div>';
+        if (a.comentario) html += '<div class="comment">↳ ' + escapeHtml(a.comentario) + '</div>';
+      });
+      html += '</div>';
+    });
+    if (d.extra) html += '<div class="extra">Adicional: ' + escapeHtml(d.extra) + '</div>';
+    html += '</div>';
+    return html;
+  }
+
+  function buildExportText(){
+    var lines = [];
+    lines.push("LEVANTAMIENTO DE ACTIVIDADES PREOPERATIVAS — IMSS / ANA CARE");
+    lines.push("Arranque objetivo: 15 de enero de 2027");
+    lines.push("Generado: " + new Date().toLocaleString('es-MX'));
+    lines.push("");
+    AREAS.forEach(function(a){
+      var d = state.data[a.slug];
+      lines.push("=".repeat(60));
+      lines.push("ÁREA: " + a.name + " (" + a.who + ")");
+      if (!d || !d.resultados || !d.resultados.length) { lines.push("  Sin respuesta registrada."); lines.push(""); return; }
+      lines.push("Respondió: " + (d.contacto||"—"));
+      lines.push("");
+      d.resultados.forEach(function(r,i){
+        if (!r.texto && !(r.actividades||[]).some(function(x){return x.nombre;})) return;
+        lines.push((i+1) + ". RESULTADO: " + (r.texto||"(sin nombre)"));
+        (r.actividades||[]).forEach(function(act, ai){
+          if (!act.nombre) return;
+          lines.push("   " + (ai+1) + ". Actividad: " + act.nombre);
+          lines.push("      Precedida por (misma área): " + fmtPredecesor(act, d.resultados));
+          lines.push("      Depende de: " + fmtDepende(act));
+          lines.push("      Tiempo necesario: " + fmtTiempo(act));
+          lines.push("      Fecha compromiso: " + (act.fecha_compromiso||"—"));
+          if (act.comentario) lines.push("      Comentario: " + act.comentario);
+        });
+        lines.push("");
+      });
+      if (d.extra) { lines.push("Actividad adicional no contemplada: " + d.extra); lines.push(""); }
+    });
+    return lines.join("\n");
+  }
+
+  function doExport(){
+    var text = buildExportText();
+    try {
+      var blob = new Blob([text], {type: "text/plain;charset=utf-8"});
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement("a");
+      a.href = url; a.download = "levantamiento_imss_ruta_critica.txt";
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      setTimeout(function(){ URL.revokeObjectURL(url); }, 2000);
+    } catch(e) { fallbackCopy(text); }
+  }
+  function fallbackCopy(text){
+    try { navigator.clipboard.writeText(text); alert("No se pudo descargar el archivo directamente, así que se copió el resumen al portapapeles."); }
+    catch(e){ var w=window.open(""); if (w) w.document.write("<pre>"+escapeHtml(text)+"</pre>"); }
+  }
+
+  function loadAllDocs(){
+    if (!state.dbNS) { renderActOverview(); renderNav(); return; }
+    var promises = AREAS.map(function(a){
+      return state.dbNS.doc("respuestas/"+a.slug).get().then(function(snap){ state.data[a.slug]=snap && snap.exists ? snap.data() : null; })
+        .catch(function(){ state.data[a.slug]=state.data[a.slug]||null; });
+    });
+    Promise.all(promises).then(function(){ renderActOverview(); renderNav(); });
+  }
+
+  document.getElementById("addResultado").addEventListener("click", function(){ state.resultados.push(emptyResultado()); renderResultados(); });
+  document.getElementById("saveBtn").addEventListener("click", save);
+  document.getElementById("exportOverviewBtn").addEventListener("click", doExport);
+
+  // ---------------- Init ----------------
+  hideAllViews();
+  renderNav();
+
+  function showConnBanner(msg){
+    var b = document.getElementById("connBanner");
+    document.getElementById("connBannerText").innerHTML = "⚠ " + msg;
+    b.style.display = "flex";
+  }
+  function hideConnBanner(){ document.getElementById("connBanner").style.display = "none"; }
+  document.getElementById("connRetryBtn").addEventListener("click", function(){ connectDb(true); });
+
+  // ---------------- Adaptador de Firebase Firestore ----------------
+  // Envuelve Firestore para que el resto de la app lo use exactamente
+  // igual que antes: dbNS.doc(path).get() / .set(data)
+  function makeFirestoreAdapter(firestore){
+    return {
+      doc: function(path){
+        var parts = path.split("/");
+        var ref = firestore.collection(parts[0]).doc(parts[1]);
+        return {
+          get: function(){
+            return ref.get().then(function(snap){
+              return { exists: snap.exists, data: function(){ return snap.data(); } };
+            });
+          },
+          set: function(data){ return ref.set(data); }
+        };
+      }
+    };
+  }
+
+  function connectDb(isRetry){
+    if (!FIREBASE_CONFIG || FIREBASE_CONFIG.apiKey.indexOf("PEGA_AQUI") === 0) {
+      showConnBanner("Esta página todavía no tiene su configuración de Firebase. Edita el bloque FIREBASE_CONFIG al inicio del archivo con los datos de tu proyecto.");
+      return;
+    }
+    try {
+      if (!window.__fbApp) window.__fbApp = firebase.initializeApp(FIREBASE_CONFIG);
+      var firestore = firebase.firestore();
+      state.dbNS = makeFirestoreAdapter(firestore);
+      hideConnBanner();
+      loadAllDocsQuiet();
+      if (state.currentArea && state.view === "form") loadAreaDoc(state.currentArea);
+      if (state.view === "actividadesArea" && state.currentActArea) selectActividadesArea(state.currentActArea);
+      if (state.view === "actividadesOverview") loadAllDocs();
+      if (state.view === "ruta") showRuta();
+    } catch(e) {
+      if (!isRetry) setTimeout(function(){ connectDb(true); }, 1500);
+      else showConnBanner("No se pudo conectar con la base de datos (Firebase). Revisa que FIREBASE_CONFIG sea correcto y que Firestore esté activado en tu proyecto.");
+    }
+  }
+
+  function init(){
+    connectDb(false);
+  }
+  function loadAllDocsQuiet(){
+    if (!state.dbNS) { renderNav(); return; }
+    var promises = AREAS.map(function(a){
+      return state.dbNS.doc("respuestas/"+a.slug).get().then(function(snap){ state.data[a.slug]=snap && snap.exists ? snap.data() : null; }).catch(function(){});
+    });
+    Promise.all(promises).then(function(){ renderNav(); });
+  }
+  init();
+
+})();
+</script>
+</body>
+</html>
