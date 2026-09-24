@@ -22,7 +22,8 @@
   <p>Esta página escribe actividades de ejemplo (al menos 2 por área) directamente en tu base de datos de Firebase, para probar que la herramienta principal funciona de punta a punta. Solo se usa una vez.</p>
   <div class="warn">⚠ No incluye <strong>Administración</strong> a propósito, para no borrar lo que Marisol ya capturó ahí de verdad. Las demás 7 áreas se sobrescriben con datos de prueba — bórralos después desde cada área en la herramienta principal, o dime y te ayudo a limpiarlos.</div>
   <button id="seedBtn">Sembrar datos de prueba</button>
-  <div id="log">Listo para sembrar. Dale clic al botón de arriba.</div>
+  <button id="clearBtn" style="background:#b5533f;">Borrar datos de prueba</button>
+  <div id="log">Listo. Elige una opción arriba.</div>
 
 <script>
   var FIREBASE_CONFIG = {
@@ -112,6 +113,30 @@
     chain.then(function(){
       log("\nListo. Abre la herramienta principal y revisa Actividades / Ruta crítica / Dashboard.");
       btn.disabled = false;
+    });
+  });
+
+  document.getElementById("clearBtn").addEventListener("click", function(){
+    var btn = this; btn.disabled = true;
+    document.getElementById("seedBtn").disabled = true;
+    document.getElementById("log").textContent = "Borrando...";
+    var app = firebase.initializeApp(FIREBASE_CONFIG);
+    var db = firebase.firestore();
+    var slugs = Object.keys(SEED); // las mismas 7 áreas — nunca toca administracion
+    var chain = Promise.resolve();
+    slugs.forEach(function(slug){
+      chain = chain.then(function(){
+        return db.collection("respuestas").doc(slug).delete().then(function(){
+          log("✓ borrado: " + slug);
+        }).catch(function(err){
+          log("✗ " + slug + " — ERROR: " + err.message);
+        });
+      });
+    });
+    chain.then(function(){
+      log("\nListo. Esas 7 áreas quedaron en ceros (sin ninguna respuesta guardada).");
+      btn.disabled = false;
+      document.getElementById("seedBtn").disabled = false;
     });
   });
 </script>
